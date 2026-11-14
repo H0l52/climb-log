@@ -77,7 +77,7 @@ export function TodayScreen() {
           )}
           {!!board?.length && (
             <ul className="list board-list" aria-label="Board this session">
-              {board.map((r) => <BoardEntryRow key={r.log.id} row={r} canDelete />)}
+              {board.map((r) => <BoardEntryRow key={r.log.id} row={r} />)}
             </ul>
           )}
         </>
