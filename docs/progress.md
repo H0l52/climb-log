@@ -42,10 +42,10 @@ Criteria only the owner can verify on the iPhone. Add items here; the owner tick
 
 **Phase 4**
 
-- [ ] **Charts in the gym.** Open Progress in the installed app, in dim light. With a few weeks logged: every chart fits the screen without sideways scrolling, every label is readable without zooming, and white and black bars in "Sends per colour" and "Grade pyramid" have a visible outline. Repeat with the phone in light mode (Settings → Display & Brightness → Light).
-- [ ] **Tap readout.** On "Sends per colour", tap an older bar with your thumb: it highlights and the box below shows "Week of <date> · N sends" with colour chips. The value appears below the chart, not under your finger.
-- [ ] **Goal at the wall.** Goals → "New goal" → "First send" → pick a colour you have not sent → "Add goal". Log a send of that colour on Today. Open Goals: the goal is under "Achieved" with today's date and the colour is at the top of "Achievements". Undo the climb from Today's toast: the goal is back under "Active".
-- [ ] **Streak.** With no session open, Today shows "N week streak" under the gym chips, matching the "Week streak" tile on Progress (All gyms) and Goals.
+- [x] **Charts in the gym.** Open Progress in the installed app, in dim light. With a few weeks logged: every chart fits the screen without sideways scrolling, every label is readable without zooming, and white and black bars in "Sends per colour" and "Grade pyramid" have a visible outline. Repeat with the phone in light mode (Settings → Display & Brightness → Light).
+- [x] **Tap readout.** On "Sends per colour", tap an older bar with your thumb: it highlights and the box below shows "Week of <date> · N sends" with colour chips. The value appears below the chart, not under your finger.
+- [x] **Goal at the wall.** Goals → "New goal" → "First send" → pick a colour you have not sent → "Add goal". Log a send of that colour on Today. Open Goals: the goal is under "Achieved" with today's date and the colour is at the top of "Achievements". Undo the climb from Today's toast: the goal is back under "Active".
+- [x] **Streak.** With no session open, Today shows "N week streak" under the gym chips, matching the "Week streak" tile on Progress (All gyms) and Goals.
 
 ## Follow-ups
 
