@@ -9,7 +9,7 @@ Claude Code updates this at the end of every phase. Keep it short.
 | 2 Sessions & logging | Awaiting human checks | `phase-2` | 2026-11-14 | lint, 89 unit, 22 e2e, build pass locally; tap budgets asserted in `e2e/logging.spec.ts` |
 | 3 Reset tracking | Awaiting human checks | `phase-3` | 2026-11-14 | lint, 130 unit, 28 e2e, build pass locally; all 6 criteria pass with automated evidence |
 | 4 Progress, goals, streaks | Awaiting human checks | `phase-4` | 2026-11-14 | lint, 183 unit, 34 e2e, build pass locally; Progress renders 2,963 entries in ~160 ms (e2e) |
-| 5 Photos, board log, backup | Not started | | | |
+| 5 Photos, board log, backup | Awaiting human checks | `phase-5` | 2026-11-14 | lint, 229 unit, 42 e2e, build pass locally; 10 camera-size photos store at 88 KB avg, thumbs 5 KB |
 | 6 Polish & spikes | Not started | | | |
 
 Status values: Not started · In progress · Awaiting human checks · Done.
@@ -47,6 +47,12 @@ Criteria only the owner can verify on the iPhone. Add items here; the owner tick
 - [x] **Goal at the wall.** Goals → "New goal" → "First send" → pick a colour you have not sent → "Add goal". Log a send of that colour on Today. Open Goals: the goal is under "Achieved" with today's date and the colour is at the top of "Achievements". Undo the climb from Today's toast: the goal is back under "Active".
 - [x] **Streak.** With no session open, Today shows "N week streak" under the gym chips, matching the "Week streak" tile on Progress (All gyms) and Goals.
 
+**Phase 5**
+
+- [ ] **Camera from the installed app.** Open the app from the Home Screen. Log climb → pick a colour → More detail → "Take photo". The rear camera opens (allow camera access if asked). Take a photo and tap "Use Photo": "Preparing photo…" shows briefly, then a small preview with "Remove photo". Tap "Not yet". Open Log climb again: the project row has the photo thumbnail on the left, the right way up. Tap the thumbnail: the photo fills the screen; "Close" returns. Repeat with "Choose photo" and a photo from the library (an older HEIC photo is a good test).
+- [ ] **Backup to Files and back.** More → Settings → Backup. "Include photos" is on. Tap "Export backup", then "Save backup": the share sheet opens. Choose "Save to Files" → On My iPhone → Save. "Last backup" now shows today. Log one more climb. Back in Settings tap "Import backup" → Browse → pick the saved `climb-log-<date>.zip`. The box reads "Replace everything on this phone with the backup from <date>? It has N sessions, M climbs and P photos." Tap "Replace data": "Backup imported" shows, the extra climb is gone from Today, and photos still open from Walls → the wall.
+- [ ] **Backup banner.** Not checkable without waiting 31 days; covered by `e2e/backup.spec.ts` with a fake clock. Optional: after 31 days without exporting, Today shows "Last backup 31 days ago" under the wall strip; "Dismiss" hides it for a week.
+
 ## Follow-ups
 
 Things noticed but out of scope for the current phase.
@@ -55,7 +61,7 @@ Things noticed but out of scope for the current phase.
 - e2e runs on Chromium with an iPhone viewport; consider a WebKit project in CI for Safari-specific bugs.
 - Re-check `npm audit` once `vite-plugin-pwa` / `workbox-build` update their transitive deps (decision 16).
 - Repeats of a sent problem are supported by the domain and storage but have no UI entry point (Log climb lists projects only).
-- Entries can only be edited while their session is open; there is no session history screen yet.
+- Entries can only be edited while their session is open; More → Sessions (Phase 5) shows past sessions read-only.
 - Problem nickname, style tags, felt and note can be set when logging but not edited afterwards.
 - Undoing the climb that auto-started a session leaves that (empty) session open.
 - Wall detail links to Settings for rename, retire and merge rather than offering them inline (decision 37).
@@ -64,3 +70,7 @@ Things noticed but out of scope for the current phase.
 - Goals can be removed but not edited (target, deadline).
 - Progress filters reset when leaving the screen; consider remembering them.
 - Style breakdown only has data once walls or climbs carry style tags; wall tags can only be set in `seed.json` today.
+- A photo cannot be removed from a problem once saved (only replaced by re-logging with a new one), and Undo of that re-log does not bring the old photo back.
+- Board climbs cannot be edited, only deleted and re-logged.
+- The share sheet path (`navigator.share` with files) has no automated test: Chromium in CI has no Web Share, so e2e covers the download fallback.
+- Board walls show in Settings → Walls but have no Walls-tab entry (decision 37 unchanged).
