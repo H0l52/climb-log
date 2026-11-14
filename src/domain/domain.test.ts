@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { isoWeekday, melbourneDate } from './dates';
 import { contrastRatio, isValidHex, needsBorder, parseHex, textOn } from './colour';
 import { moveItem, nextOrder } from './ordering';
-import { activeWalls, cleanName, planMerge } from './walls';
+import { activeWalls, cleanName, countByBand, planMerge, total } from './walls';
 import type { WallSet } from '../db/types';
 
 describe('dates', () => {
@@ -89,5 +89,19 @@ describe('walls', () => {
   it('activeWalls and cleanName', () => {
     expect(activeWalls([{ name: 'b', active: true }, { name: 'a', active: true }, { name: 'c', active: false }]).map((w) => w.name)).toEqual(['a', 'b']);
     expect(cleanName('  x   y ')).toBe('x y');
+  });
+});
+
+describe('countByBand', () => {
+  it('counts problems by status and colour', () => {
+    const c = countByBand([
+      { gradeBandId: 'y', status: 'sent' },
+      { gradeBandId: 'y', status: 'sent' },
+      { gradeBandId: 'b', status: 'project' },
+      { gradeBandId: 'y', status: 'expired' },
+    ]);
+    expect(c).toEqual({ sent: { y: 2 }, project: { b: 1 }, expired: { y: 1 } });
+    expect(total(c.sent)).toBe(2);
+    expect(total({})).toBe(0);
   });
 });

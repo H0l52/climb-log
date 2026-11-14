@@ -1,12 +1,14 @@
 import seedJson from '../data/seed.json';
 import { ClimbDB } from './schema';
 import { createRepositories } from './repositories';
+import { createWallViews } from './wallViews';
 import { applySeed } from './seed';
 import { ensurePersistence } from './persistence';
 import type { SeedData } from './types';
 
 export const db = new ClimbDB();
 export const repos = createRepositories(db);
+export const wallViews = createWallViews(db, repos);
 
 let ready: Promise<void> | null = null;
 

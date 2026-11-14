@@ -1,7 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, repos } from './index';
+import { db, repos, wallViews } from './index';
 import type { EpochMs, GradeBand, Gym, ID, Session, SettingKey, Wall, WallSet } from './types';
 import type { Entry, ProjectRow } from './logging';
+import type { WallDetail, WallSummary } from './wallViews';
 
 export function useGyms(): Gym[] | undefined {
   return useLiveQuery(async () => (await db.gyms.toArray()).sort((a, b) => a.name.localeCompare(b.name)), []);
@@ -57,4 +58,14 @@ export function useLastSession(gymId: ID | undefined): { session: Session; entri
 
 export function useProjects(wallId: ID | undefined): ProjectRow[] | undefined {
   return useLiveQuery(() => (wallId ? repos.logging.projects(wallId) : []), [wallId]);
+}
+
+/** Active boulder walls of a gym with their current set and its problems. */
+export function useWallSummaries(gymId: ID | undefined): WallSummary[] | undefined {
+  return useLiveQuery(() => (gymId ? wallViews.summaries(gymId) : []), [gymId]);
+}
+
+/** A wall with its current and past sets; null when the wall does not exist. */
+export function useWallDetail(wallId: ID): WallDetail | null | undefined {
+  return useLiveQuery(() => wallViews.detail(wallId), [wallId]);
 }

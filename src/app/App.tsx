@@ -9,21 +9,23 @@ import { LogScreen } from '../features/log/LogScreen';
 import { Toast } from '../ui/Toast';
 import { dismissToast } from '../ui/toast';
 import { WallsScreen } from '../features/walls/WallsScreen';
+import { WallDetailScreen } from '../features/walls/WallDetailScreen';
 import { ProgressScreen } from '../features/progress/ProgressScreen';
 import { GoalsScreen } from '../features/goals/GoalsScreen';
 import { MoreScreen } from '../features/more/MoreScreen';
 import { BoardScreen } from '../features/board/BoardScreen';
 import { SettingsScreen } from '../features/settings/SettingsScreen';
 
-function Screen({ name }: { name: RouteName }) {
+function Screen({ name, params }: { name: RouteName; params: Record<string, string> }) {
   switch (name) {
     case 'today':
       return <TodayScreen />;
     case 'log':
       return <LogScreen />;
     case 'walls':
-    case 'wall':
       return <WallsScreen />;
+    case 'wall':
+      return <WallDetailScreen key={params.id} wallId={params.id ?? ''} />;
     case 'progress':
       return <ProgressScreen />;
     case 'goals':
@@ -68,11 +70,11 @@ export function App() {
     // A toast belongs to Today; it must never cover the next screen's buttons.
     if (route.name !== 'today') dismissToast();
     window.scrollTo(0, 0);
-  }, [route.name]);
+  }, [route.name, route.params.id]);
 
   return (
     <div className="app">
-      {state === 'ready' && <Screen name={route.name} />}
+      {state === 'ready' && <Screen name={route.name} params={route.params} />}
       {state instanceof Error && (
         <Placeholder title="Storage unavailable">
           <p>This browser blocked on-device storage, so nothing can be saved. Open the app from the home screen, not a private tab.</p>
