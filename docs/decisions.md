@@ -27,6 +27,7 @@ Newest entries at the bottom. The newest entry on a topic wins. Add a dated line
 | 21 | 2026-11-14 | Gyms are listed by name. The Settings wall editor opens on `lastGymId`, else the first gym, and saves the pick to `lastGymId` | No gym order field; cheap to change |
 | 22 | 2026-11-14 | e2e runs on Chromium with the iPhone 13 viewport, UA and touch (no WebKit in the build environment). CI runs lint, unit, e2e and build on every push and PR; only `main` deploys | A failing test blocks the deploy |
 | 23 | 2026-11-14 | Actions versions: checkout v7, setup-node v7, upload-pages-artifact v5, deploy-pages v5 (latest major tags on 2026-11-14) | Brief task 7 |
+| 24 | 2026-11-14 | In the installed app, the tab bar and update banner are positioned from the top using a measured `--app-height` (the screen's long edge), not `bottom: 0` | iOS can launch a home-screen app with a viewport shorter than the screen until the page scrolls, which floated the tab bar up on short screens |
 
 ## Assumptions still to confirm (non-blocking)
 
