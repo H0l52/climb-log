@@ -81,7 +81,7 @@ Booleans are not indexable in IndexedDB; filter `active` in memory (row counts a
 
 Grade bands: reorder renumbers every band in the system to `1..n`; a new band is added as the hardest (`order = max + 1`, `approxV = null`); retire sets `active = false` and can be restored.
 
-Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by logging a climb), `wallLastUsed` (map of wall ID → epoch ms of the last climb logged there; orders the wall picker), `backupLastAt`, `photoRetentionDays` (default 90), `persistGranted` (`true`/`false` from `navigator.storage.persist()` on first launch, re-read from `persisted()` on later launches; `null` when unsupported).
+Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by logging a climb), `wallLastUsed` (map of wall ID → epoch ms of the last climb logged there; orders the wall picker), `backupLastAt`, `photoRetentionDays` (default 90), `persistGranted` (`true`/`false` from `navigator.storage.persist()` on first launch, re-read from `persisted()` on later launches; `null` when unsupported). `lastReset` (map of wall ID → the wall's latest reset record `{ wallId, retiredSetId, newSetId, date, changed: [{ problemId, before }], madeAt }`, kept so Undo survives a reload; removed on undo).
 
 ## Seeding
 
@@ -110,9 +110,12 @@ Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by
   1. current `WallSet.retiredDate = d`
   2. every `project` problem in it → `expired`
   3. new `WallSet` with `setDate = d`
-- Default $d$: the most recent set day for that gym on or before today (configurable set days per gym; fall back to today).
-- Undo is available until the session ends or another reset is made on that wall. Undo restores statuses exactly.
-- A reset never changes any historical metric.
+- Allowed $d$: not in the future and not before the current set's `setDate` (Melbourne dates).
+- Default $d$: the most recent set day for that gym on or before today (configurable set days per gym; fall back to today), raised to the current set's `setDate` if it would be earlier.
+- Only an active boulder wall with a current set can be reset. Problems stay on the set they were climbed on.
+- Undo is available until the session that was open at the reset ends (with none open, until the next session ends) or another reset is made on that wall. Undo makes the retired set current again, restores every status the reset changed exactly (a problem corrected since, so no longer `expired`, is left as is), moves any climbs logged on the new set back to the restored set, then removes the new set.
+- A reset never changes any historical metric: metrics derive sends from attempts, never from `Problem.status`.
+- Days since set = calendar days from the current set's `setDate` to today (0 on the day). "Fresh" = 0–6 days.
 
 **Walls**
 
@@ -130,7 +133,7 @@ Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by
 
 ## Metrics
 
-All computed in `src/domain/metrics.ts` as pure functions over arrays. Boulder problems only; board logs are excluded.
+All computed in `src/domain/metrics.ts` as pure functions over arrays. Boulder problems only; board logs are excluded. Phase 3 stubs sends, flashes, flash rate, send rate and session score; every metric is registered in `METRICS` so the reset test covers it.
 
 - Sends of colour $c$ in a window: problems whose first success falls in the window.
 - Flash rate: $F_c = \dfrac{\text{flashes}_c}{\text{sends}_c}$ (undefined when $\text{sends}_c = 0$; display "–").
