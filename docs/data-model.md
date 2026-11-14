@@ -133,15 +133,33 @@ Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by
 
 ## Metrics
 
-All computed in `src/domain/metrics.ts` as pure functions over arrays. Boulder problems only; board logs are excluded. Phase 3 stubs sends, flashes, flash rate, send rate and session score; every metric is registered in `METRICS` so the reset test covers it.
+All computed in `src/domain/metrics.ts` (and the Progress view model in `src/domain/progress.ts`) as pure functions over arrays. Boulder problems only; board logs are never loaded. Every metric is registered in `METRICS` so the reset test covers it, and each has hand-calculated fixture values (`src/domain/__fixtures__/metricsFixture.ts`).
 
+Windows are inclusive Melbourne calendar-date ranges. Weeks run Monday to Sunday.
+
+- A problem's **first success** is its earliest `flash` or `send` entry; later successes are repeats.
 - Sends of colour $c$ in a window: problems whose first success falls in the window.
-- Flash rate: $F_c = \dfrac{\text{flashes}_c}{\text{sends}_c}$ (undefined when $\text{sends}_c = 0$; display "–").
-- Send rate: $S_c = \dfrac{\text{problems sent}_c}{\text{problems attempted}_c}$ over problems first attempted in the window.
-- Session score: $\displaystyle \text{score} = \sum_{\text{new sends}} w_c,\quad w_c = 2^{\,\text{order}(c) - 1}$
-- Working grade: highest-order colour with $S_c \ge 0.5$ and at least 4 problems attempted over the trailing 42 days.
-- Weekly streak: consecutive Monday-to-Sunday weeks with at least one session, counting back from the current week (the current week does not break the streak while it is in progress).
-- Style breakdown: $S_c$ grouped by wall `styleTags` and problem `styleTags`.
+- Flash rate: $F_c = \dfrac{\text{flashes}_c}{\text{sends}_c}$ (undefined when $\text{sends}_c = 0$; display "–", a gap in lines, never 0%).
+- Send rate: $S_c = \dfrac{\text{problems sent}_c}{\text{problems attempted}_c}$ over problems first attempted in the window (sent at any time).
+- Session score: $\displaystyle \text{score} = \sum_{\text{new sends}} w_c,\quad w_c = 2^{\,\text{order}(c) - 1}$. Per bucket, the sum over new sends in the bucket.
+- Working grade: highest-order colour with $S_c \ge 0.5$ and at least 4 problems attempted over the trailing 42 days (today and the 41 days before).
+- Weekly streak: consecutive Monday-to-Sunday weeks with at least one session, counting back from the current week (the current week does not break the streak while it is in progress). Uses `Session.date`, so daylight-saving changes cannot move a session between weeks.
+- Style breakdown: $S_c$ grouped by tag, over the union of the wall's `styleTags` and the problem's `styleTags` (each tag once per problem); weakest first; untagged problems are left out.
+- First send of each colour: the problem with the earliest first success per colour (automatic achievements).
+- Gym filter: keep sessions at the gym and the entries logged in them.
+
+## Goals
+
+Stored in `goals` (schema v1, no change). `achievedAt` is derived from the log by `src/domain/goals.ts` and re-synced inside every logging write (log, re-log, edit, delete, restore) and session start, so a goal completes in the same transaction as the entry that met it, at that entry's `createdAt`, and goes back to `null` if that entry is corrected away. Only events at or after `createdAt` and on or before `deadline` count.
+
+| Type | `gradeBandId` | `target` | Achieved at |
+|---|---|---|---|
+| `first-send-of-colour` | required | 1 | the colour's first send (or `createdAt` if it was already sent) |
+| `sends-of-colour` | required | sends | the target-th send of the colour after `createdAt` |
+| `flash-rate` | required | percent 1–100 | the first send after `createdAt` at which the colour's flash rate over the trailing 42 days is ≥ target with at least 4 sends |
+| `sessions-per-week` | null | sessions | the target-th session started within one Monday-to-Sunday week |
+
+A goal past its deadline and not achieved is shown as missed. Goals can be removed (with Undo).
 
 ## Export format
 

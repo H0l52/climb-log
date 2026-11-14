@@ -33,6 +33,9 @@ const metricsNow = async () => {
     problems: await db.problems.toArray(),
     attempts: await db.attempts.toArray(),
     bands: await db.gradeBands.toArray(),
+    sessions: await db.sessions.toArray(),
+    wallSets: await db.wallSets.toArray(),
+    walls: await db.walls.toArray(),
   };
   return Object.fromEntries(Object.entries(METRICS).map(([k, f]) => [k, f(input)]));
 };

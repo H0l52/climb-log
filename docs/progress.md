@@ -8,7 +8,7 @@ Claude Code updates this at the end of every phase. Keep it short.
 | 1 Skeleton & storage | Awaiting human checks | `phase-1` | 2026-11-14 | lint, 51 unit, 9 e2e, build pass locally; CI on PR; first deploy after merge |
 | 2 Sessions & logging | Awaiting human checks | `phase-2` | 2026-11-14 | lint, 89 unit, 22 e2e, build pass locally; tap budgets asserted in `e2e/logging.spec.ts` |
 | 3 Reset tracking | Awaiting human checks | `phase-3` | 2026-11-14 | lint, 130 unit, 28 e2e, build pass locally; all 6 criteria pass with automated evidence |
-| 4 Progress, goals, streaks | Not started | | | |
+| 4 Progress, goals, streaks | Awaiting human checks | `phase-4` | 2026-11-14 | lint, 183 unit, 34 e2e, build pass locally; Progress renders 2,963 entries in ~160 ms (e2e) |
 | 5 Photos, board log, backup | Not started | | | |
 | 6 Polish & spikes | Not started | | | |
 
@@ -40,6 +40,13 @@ Criteria only the owner can verify on the iPhone. Add items here; the owner tick
 - [x] **Undo after reload.** Right after a reset, close the app fully and reopen it. Open the same wall: "Reset <date> · Undo reset" is still shown. Tap it: the wall's projects are back and "Past sets" is gone. Then reset again, end the session on Today, and reopen the wall: the Undo line is gone.
 - [x] **Today strip.** On Today, the strip under the gym chips lists that gym's walls, freshest first, each with "N days" and "Fresh" for walls set in the last 7 days. It scrolls sideways with one thumb and each tile opens the wall.
 
+**Phase 4**
+
+- [ ] **Charts in the gym.** Open Progress in the installed app, in dim light. With a few weeks logged: every chart fits the screen without sideways scrolling, every label is readable without zooming, and white and black bars in "Sends per colour" and "Grade pyramid" have a visible outline. Repeat with the phone in light mode (Settings → Display & Brightness → Light).
+- [ ] **Tap readout.** On "Sends per colour", tap an older bar with your thumb: it highlights and the box below shows "Week of <date> · N sends" with colour chips. The value appears below the chart, not under your finger.
+- [ ] **Goal at the wall.** Goals → "New goal" → "First send" → pick a colour you have not sent → "Add goal". Log a send of that colour on Today. Open Goals: the goal is under "Achieved" with today's date and the colour is at the top of "Achievements". Undo the climb from Today's toast: the goal is back under "Active".
+- [ ] **Streak.** With no session open, Today shows "N week streak" under the gym chips, matching the "Week streak" tile on Progress (All gyms) and Goals.
+
 ## Follow-ups
 
 Things noticed but out of scope for the current phase.
@@ -47,11 +54,13 @@ Things noticed but out of scope for the current phase.
 - One-time "Share → Add to Home Screen" explainer when not standalone (ui-spec States; pwa-ios skill). Not in the Phase 1 task list.
 - e2e runs on Chromium with an iPhone viewport; consider a WebKit project in CI for Safari-specific bugs.
 - Re-check `npm audit` once `vite-plugin-pwa` / `workbox-build` update their transitive deps (decision 16).
-- Today: streak (Phase 4) is in ui-spec but not built yet.
 - Repeats of a sent problem are supported by the domain and storage but have no UI entry point (Log climb lists projects only).
 - Entries can only be edited while their session is open; there is no session history screen yet.
 - Problem nickname, style tags, felt and note can be set when logging but not edited afterwards.
 - Undoing the climb that auto-started a session leaves that (empty) session open.
 - Wall detail links to Settings for rename, retire and merge rather than offering them inline (decision 37).
 - Retired and merged walls have no entry point in the Walls list; their history is only reachable by direct link.
-- `src/domain/metrics.ts` holds Phase 3 stubs; Phase 4 completes it and must keep `METRICS` complete so the reset test covers every metric.
+- Chart bars are narrower than 44 pt once a range has more than about 8 buckets (13 weeks, 12+ months); a swipe-to-scrub readout could replace per-bar taps.
+- Goals can be removed but not edited (target, deadline).
+- Progress filters reset when leaving the screen; consider remembering them.
+- Style breakdown only has data once walls or climbs carry style tags; wall tags can only be set in `seed.json` today.

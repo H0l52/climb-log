@@ -1,6 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, repos, wallViews } from './index';
-import type { EpochMs, GradeBand, Gym, ID, Session, SettingKey, Wall, WallSet } from './types';
+import type { EpochMs, Goal, GradeBand, Gym, ID, ISODate, Session, SettingKey, Wall, WallSet } from './types';
+import type { MetricInput } from '../domain/metrics';
+import { loadMetricInput } from './goals';
 import type { Entry, ProjectRow } from './logging';
 import type { WallDetail, WallSummary } from './wallViews';
 
@@ -68,4 +70,19 @@ export function useWallSummaries(gymId: ID | undefined): WallSummary[] | undefin
 /** A wall with its current and past sets; null when the wall does not exist. */
 export function useWallDetail(wallId: ID): WallDetail | null | undefined {
   return useLiveQuery(() => wallViews.detail(wallId), [wallId]);
+}
+
+/** Everything the metrics read (boulder problems, entries, sessions, sets, walls, bands). */
+export function useMetricInput(): MetricInput | undefined {
+  return useLiveQuery(() => loadMetricInput(db), []);
+}
+
+/** Goals, oldest first. */
+export function useGoals(): Goal[] | undefined {
+  return useLiveQuery(async () => (await db.goals.toArray()).sort((a, b) => a.createdAt - b.createdAt), []);
+}
+
+/** Calendar dates of every session, for the streak. */
+export function useSessionDates(): ISODate[] | undefined {
+  return useLiveQuery(async () => (await db.sessions.toArray()).map((s) => s.date), []);
 }

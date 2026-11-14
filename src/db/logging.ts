@@ -5,6 +5,7 @@ import {
   addAttempt, assertValidEntry, createProblemWithFirstAttempt, firstSuccess, inOrder, resultFor, statusFromAttempts, totalTries,
 } from '../domain/logging';
 import { autoCloseAt, newSession } from '../domain/sessions';
+import { goalTables, syncGoals } from './goals';
 
 /** One logged entry with what a list needs to show it. */
 export interface Entry {
@@ -58,7 +59,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
 
   /** The open session for this gym, starting one if needed. An open session at another gym is ended. */
   async function ensureSession(gymId: ID): Promise<Session> {
-    return db.transaction('rw', [db.sessions, db.attempts, db.gyms], async () => {
+    return db.transaction('rw', [db.gyms, ...goalTables(db)], async () => {
       await closeStale();
       const open = await openSession();
       if (open?.gymId === gymId) return open;
@@ -66,6 +67,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
       if (open) await db.sessions.update(open.id, { endedAt: clock.now() });
       const session = newSession(gymId, clock.now(), clock.newId());
       await db.sessions.add(session);
+      await syncGoals(db); // a sessions-a-week goal can complete when a session starts
       return session;
     });
   }
@@ -120,7 +122,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
     return { set, wall };
   }
 
-  const tables = [db.settings, db.gyms, db.walls, db.wallSets, db.gradeBands, db.problems, db.attempts, db.sessions];
+  const tables = [db.settings, db.gyms, db.walls, db.wallSets, db.gradeBands, db.problems, db.attempts, db.sessions, db.goals];
 
   const logging = {
     /** Projects on a wall's current set, most recently tried first. */
@@ -157,6 +159,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
         await db.problems.add(problem);
         await db.attempts.add(attempt);
         await touch(wall);
+        await syncGoals(db);
         return { attempt, problem, session };
       });
     },
@@ -181,6 +184,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
         await db.problems.update(problem.id, { status: problem.status });
         await db.attempts.add(attempt);
         await touch(wall);
+        await syncGoals(db);
         return { attempt, problem, session };
       });
     },
@@ -203,6 +207,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
           status: statusFromAttempts(next, set.retiredDate !== null),
           gradeBandId: change.gradeBandId ?? problem.gradeBandId,
         });
+        await syncGoals(db);
       });
     },
 
@@ -220,6 +225,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
           const { set } = await wallOfSet(problem.wallSetId);
           await db.problems.update(problem.id, { status: statusFromAttempts(rest, set.retiredDate !== null) });
         }
+        await syncGoals(db);
         return { attempt, problem };
       });
     },
@@ -232,6 +238,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
         const all = await db.attempts.where('problemId').equals(deleted.problem.id).toArray();
         const { set } = await wallOfSet(deleted.problem.wallSetId);
         await db.problems.update(deleted.problem.id, { status: statusFromAttempts(all, set.retiredDate !== null) });
+        await syncGoals(db);
       });
     },
   };
