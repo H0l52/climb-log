@@ -20,11 +20,11 @@ Criteria only the owner can verify on the iPhone. Add items here; the owner tick
 
 **Phase 1**
 
-- [ ] **First deploy.** Repo → Settings → Pages → Source is "GitHub Actions". Merge the Phase 1 PR. Actions → "Deploy to GitHub Pages" on `main` is green (build then deploy), and `https://h0l52.github.io/climb-log/` shows the Today screen.
-- [ ] **Install.** On the iPhone, open `https://h0l52.github.io/climb-log/` in Safari → Share → Add to Home Screen → Add. The icon is three white bars on dark slate, labelled "Climb Log". Open it: no Safari address bar or toolbar; the tab bar sits above the home indicator.
-- [ ] **Offline.** After opening the installed app once online, close it fully (swipe up), turn on Airplane Mode, open it again. Today, Walls, Progress, Goals and More → Settings all load; Settings lists the walls and colours.
+- [x] **First deploy.** Repo → Settings → Pages → Source is "GitHub Actions". Merge the Phase 1 PR. Actions → "Deploy to GitHub Pages" on `main` is green (build then deploy), and `https://h0l52.github.io/climb-log/` shows the Today screen.
+- [x] **Install.** On the iPhone, open `https://h0l52.github.io/climb-log/` in Safari → Share → Add to Home Screen → Add. The icon is three white bars on dark slate, labelled "Climb Log". Open it: no Safari address bar or toolbar; the tab bar sits above the home indicator.
+- [x] **Offline.** After opening the installed app once online, close it fully (swipe up), turn on Airplane Mode, open it again. Today, Walls, Progress, Goals and More → Settings all load; Settings lists the walls and colours.
 - [ ] **Update banner.** With the installed app closed, merge any change to `main` and wait for the deploy. Open the app (you may need to close and reopen it once): a "New version ready · Reload to update" bar appears above the tab bar. Tap "Reload to update": the app reloads and More → Settings → About shows the new build date.
-- [ ] **Storage.** More → Settings → Storage shows "Persistent storage: Granted" in the installed app (it may say "Not granted" in Safari tabs).
+- [x] **Storage.** More → Settings → Storage shows "Persistent storage: Granted" in the installed app (it may say "Not granted" in Safari tabs).
 
 ## Follow-ups
 
