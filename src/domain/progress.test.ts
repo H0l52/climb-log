@@ -120,3 +120,11 @@ describe('undefined rates', () => {
     expect(v.tiles).toEqual({ workingGrade: null, sends: 0, sendsDelta: null, flashRate: null, flashRateDelta: null, streak: 0 });
   });
 });
+
+describe('formatDateIn', () => {
+  it('adds the year only for other years', async () => {
+    const { formatDateIn } = await import('./dates');
+    expect(formatDateIn('2026-11-14', '2026-12-01')).toBe('Sat 14 Nov');
+    expect(formatDateIn('2024-11-26', '2026-12-01')).toBe('Tue 26 Nov 2024');
+  });
+});

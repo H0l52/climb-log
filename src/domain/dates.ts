@@ -89,3 +89,8 @@ export function formatShort(date: ISODate): string {
 export function formatMonth(date: ISODate): string {
   return monthFmt.format(new Date(toUtc(date)));
 }
+
+/** 'Sat 14 Nov', with the year added when it is not the current one ('Tue 26 Nov 2024'). */
+export function formatDateIn(date: ISODate, today: ISODate): string {
+  return date.slice(0, 4) === today.slice(0, 4) ? formatDate(date) : `${formatDate(date)} ${date.slice(0, 4)}`;
+}

@@ -135,3 +135,17 @@ export function goalUpdates(goals: readonly Goal[], input: MetricInput): { id: I
     return at === g.achievedAt ? [] : [{ id: g.id, achievedAt: at }];
   });
 }
+
+/** "First Red send", "5 Green sends", "Blue flash rate 60%", "2 sessions in a week". */
+export function goalTitle(goal: Pick<Goal, 'type' | 'target'>, bandName: string): string {
+  switch (goal.type) {
+    case 'first-send-of-colour':
+      return `First ${bandName} send`;
+    case 'sends-of-colour':
+      return `${goal.target} ${bandName} ${goal.target === 1 ? 'send' : 'sends'}`;
+    case 'flash-rate':
+      return `${bandName} flash rate ${goal.target}%`;
+    case 'sessions-per-week':
+      return `${goal.target} ${goal.target === 1 ? 'session' : 'sessions'} in a week`;
+  }
+}

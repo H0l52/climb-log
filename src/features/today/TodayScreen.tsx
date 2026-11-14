@@ -1,5 +1,6 @@
 import { repos } from '../../db';
-import { useCurrentGym, useGradeBands, useLastSession, useOpenSession, useSessionEntries } from '../../db/hooks';
+import { useCurrentGym, useGradeBands, useLastSession, useOpenSession, useSessionDates, useSessionEntries } from '../../db/hooks';
+import { weeklyStreak } from '../../domain/metrics';
 import type { Entry } from '../../db/logging';
 import type { GradeBand } from '../../db/types';
 import { formatDate, formatTime, melbourneDate } from '../../domain/dates';
@@ -37,6 +38,7 @@ export function TodayScreen() {
   const entries = useSessionEntries(open?.id);
   const last = useLastSession(current?.gymId);
   const now = useNow();
+  const sessionDates = useSessionDates();
 
   if (!current || !bands || open === undefined) return null;
   const { gyms, gymId } = current;
@@ -72,6 +74,12 @@ export function TodayScreen() {
         </>
       ) : (
         <>
+          {!!sessionDates?.length && (
+            <p className="streak-line" data-testid="streak">
+              <span className="num">{weeklyStreak(sessionDates, melbourneDate(now))}</span>
+              <span className="muted"> week streak</span>
+            </p>
+          )}
           {open && <p className="muted">Session open at {gymName(open.gymId)}. Starting here ends it.</p>}
           {last ? (
             <div className="last-session">
