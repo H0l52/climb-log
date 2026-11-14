@@ -1,0 +1,35 @@
+/* Neutral chrome. Grade colours come from the database, never from here. */
+:root {
+  --bg: #15171a;
+  --surface: #1f2226;
+  --surface-2: #2a2e33;
+  --line: #3a3f46;
+  --text: #f2efe8;
+  --muted: #a9a59c;
+  --focus: #f2efe8;
+  --danger-text: #ffb4a8;
+
+  --radius: 10px;
+  --gap: 8px;
+  --pad: 16px;
+  --tap: 48px;
+  --tabbar-h: 64px;
+
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-num: -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f4f2ee;
+    --surface: #ffffff;
+    --surface-2: #e9e6e0;
+    --line: #c9c4bb;
+    --text: #17181a;
+    --muted: #5b5850;
+    --focus: #17181a;
+    --danger-text: #9b1c0c;
+    color-scheme: light;
+  }
+}
