@@ -56,7 +56,7 @@ html[data-standalone] .tabbar {
   bottom: auto;
 }
 html[data-standalone] .banner {
-  top: calc(var(--app-height) - var(--tabbar-h) - 1px - env(safe-area-inset-bottom) - 8px);
+  top: calc(var(--app-height) - var(--tabbar-h) - 1px - env(safe-area-inset-bottom) - 8px - var(--lift, 0px));
   bottom: auto;
   translate: 0 -100%;
 }
@@ -170,7 +170,7 @@ input[type='color'].swatch {
   position: fixed;
   left: var(--pad);
   right: var(--pad);
-  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 8px);
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 8px + var(--lift, 0px));
   display: flex;
   align-items: center;
   gap: var(--gap);
@@ -203,3 +203,97 @@ input[type='color'].swatch {
   font-weight: 700;
 }
 .menu-link::after { content: '›'; margin-left: auto; color: var(--muted); font-size: 24px; }
+
+/* --- Phase 2: sessions and logging --- */
+.label { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text); margin: 20px 0 8px; }
+.label .muted { text-transform: none; letter-spacing: 0; font-weight: 600; }
+.hint { margin: 8px 0 0; }
+.grade-chip-small { min-height: 32px; min-width: 72px; padding: 0 8px; font-size: 14px; }
+
+/* Wall chips: one horizontally scrolling strip, bleeding to the screen edges */
+.scroll-row {
+  display: flex;
+  gap: var(--gap);
+  overflow-x: auto;
+  margin: 0 calc(-1 * var(--pad));
+  padding: 2px var(--pad) 6px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-row::-webkit-scrollbar { display: none; }
+.scroll-row .chip { flex: none; white-space: nowrap; min-height: 48px; padding: 0 16px; color: var(--text); }
+.scroll-row .chip[aria-pressed='true'] { color: var(--bg); }
+
+/* Colour buttons: the big tap targets of the logging flow */
+.colour-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+.colour-btn {
+  min-height: 64px;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.colour-btn[aria-pressed='true'] { outline: 4px solid var(--text); outline-offset: -1px; box-shadow: inset 0 0 0 3px var(--bg); }
+.colour-grid:has([aria-pressed='true']) .colour-btn[aria-pressed='false'],
+.chips:has(.colour-btn[aria-pressed='true']) .colour-btn[aria-pressed='false'] { opacity: 0.45; }
+.colour-btn-small { min-height: 44px; min-width: 72px; padding: 0 10px; font-size: 14px; }
+
+.stepper { display: flex; align-items: center; gap: var(--gap); }
+.stepper .btn { min-width: 56px; min-height: 56px; font-size: 26px; padding: 0; }
+.stepper output { min-width: 48px; text-align: center; font-size: 32px; }
+.tries-row { margin-top: 16px; flex-wrap: nowrap; }
+.tries-row .label { margin: 0; }
+
+.more-detail { margin-top: 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.more-detail summary { min-height: var(--tap); display: flex; align-items: center; color: var(--muted); font-weight: 700; cursor: pointer; }
+.more-detail .stack { padding-bottom: 12px; }
+
+.result-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); margin-top: 16px; }
+.result-btn { min-height: 72px; font-size: 22px; font-weight: 800; }
+
+.project-row, .entry-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  width: 100%;
+  min-height: var(--tap);
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.project-row .name, .entry-row .name { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+.project-row { padding: 4px 8px; border-radius: var(--radius); }
+.project-row[aria-pressed='true'] { background: var(--surface-2); outline: 2px solid var(--text); }
+.entry-row { touch-action: pan-y; }
+
+/* Today */
+.today { display: flex; flex-direction: column; }
+.session-line { margin: 16px 0 0; }
+.session-line .num { font-size: 32px; }
+.tally { margin: 8px 0 16px; }
+.tally-nums { display: flex; gap: 24px; margin: 0 0 8px; }
+.tally-nums dd { margin: 0; font-size: 40px; line-height: 1; }
+.tally-nums dt { color: var(--muted); font-weight: 600; }
+.last-session .label { margin-top: 24px; }
+.empty-line { font-size: 18px; margin: 24px 0 0; }
+
+/* Primary actions pinned in the thumb zone, above the tab bar */
+.action-bar {
+  position: sticky;
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 8px);
+  margin-top: auto;
+  padding-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--gap);
+  background: linear-gradient(to bottom, transparent, var(--bg) 16px);
+}
+.action-bar .btn { min-height: 64px; }
+.btn-log { font-size: 20px; font-weight: 800; }
+
+/* The toast sits above Today's action bar so the next "Log climb" tap is never covered. */
+.toast { z-index: 30; --lift: 88px; }
+.grade-chip .num { margin-left: 6px; }

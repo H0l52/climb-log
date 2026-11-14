@@ -1,4 +1,4 @@
-import type { ID, ISODate, Wall, WallSet } from '../db/types';
+import type { EpochMs, ID, ISODate, Wall, WallSet } from '../db/types';
 
 export interface MergePlan {
   from: Pick<Wall, 'id' | 'active' | 'mergedIntoId'>;
@@ -24,6 +24,11 @@ export function planMerge(fromId: ID, intoId: ID, fromSets: readonly WallSet[], 
 /** Pickers show active walls only, sorted by name. */
 export function activeWalls<T extends Pick<Wall, 'active' | 'name'>>(walls: readonly T[]): T[] {
   return walls.filter((w) => w.active).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** Wall picker order: active walls, most recently used first, then by name. */
+export function byRecency<T extends Pick<Wall, 'id' | 'active' | 'name'>>(walls: readonly T[], lastUsed: Readonly<Record<ID, EpochMs>>): T[] {
+  return activeWalls(walls).sort((a, b) => (lastUsed[b.id] ?? 0) - (lastUsed[a.id] ?? 0));
 }
 
 export function cleanName(name: string): string {

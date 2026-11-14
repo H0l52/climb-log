@@ -119,7 +119,7 @@ export interface Setting {
   value: unknown;
 }
 
-export type SettingKey = 'seedVersionApplied' | 'lastGymId' | 'backupLastAt' | 'photoRetentionDays' | 'persistGranted';
+export type SettingKey = 'seedVersionApplied' | 'lastGymId' | 'backupLastAt' | 'photoRetentionDays' | 'persistGranted' | 'wallLastUsed';
 
 /** Shape of src/data/seed.json. */
 export interface SeedData {

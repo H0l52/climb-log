@@ -32,6 +32,11 @@ export function parseHash(hash: string): Route {
 /** Hash href. Hash links are relative to the current document, so they respect the base path. */
 export const href = (path: string) => `#${path}`;
 
+/** Go to a route from code (after a save). */
+export function navigate(path: string): void {
+  window.location.hash = href(path);
+}
+
 function subscribe(cb: () => void) {
   window.addEventListener('hashchange', cb);
   return () => window.removeEventListener('hashchange', cb);

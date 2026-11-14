@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { initDatabase } from '../db';
+import { initDatabase, repos } from '../db';
 import { parseHash, useHash, href, type RouteName } from './router';
 import { TabBar } from './TabBar';
 import { UpdateBanner } from '../ui/UpdateBanner';
 import { Placeholder } from '../ui/Placeholder';
 import { TodayScreen } from '../features/today/TodayScreen';
+import { LogScreen } from '../features/log/LogScreen';
+import { Toast } from '../ui/Toast';
+import { dismissToast } from '../ui/toast';
 import { WallsScreen } from '../features/walls/WallsScreen';
 import { ProgressScreen } from '../features/progress/ProgressScreen';
 import { GoalsScreen } from '../features/goals/GoalsScreen';
@@ -15,8 +18,9 @@ import { SettingsScreen } from '../features/settings/SettingsScreen';
 function Screen({ name }: { name: RouteName }) {
   switch (name) {
     case 'today':
-    case 'log':
       return <TodayScreen />;
+    case 'log':
+      return <LogScreen />;
     case 'walls':
     case 'wall':
       return <WallsScreen />;
@@ -51,7 +55,18 @@ export function App() {
     );
   }, []);
 
+  // A session left open (phone pocketed, app resumed the next day) is closed when the app comes back.
   useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void initDatabase().then(() => repos.sessions.closeStale()).catch(() => undefined);
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
+
+  useEffect(() => {
+    // A toast belongs to Today; it must never cover the next screen's buttons.
+    if (route.name !== 'today') dismissToast();
     window.scrollTo(0, 0);
   }, [route.name]);
 
@@ -66,6 +81,7 @@ export function App() {
       )}
       <TabBar current={route.name} />
       <UpdateBanner />
+      <Toast />
     </div>
   );
 }

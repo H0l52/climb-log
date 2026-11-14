@@ -24,3 +24,18 @@ export function isoWeekday(date: ISODate): number {
 }
 
 export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
+
+const dayFmt = new Intl.DateTimeFormat('en-AU', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short' });
+
+/** 'Sat 14 Nov' for a calendar date. */
+export function formatDate(date: ISODate): string {
+  const [y, m, d] = date.split('-').map(Number) as [number, number, number];
+  return dayFmt.format(new Date(Date.UTC(y, m - 1, d))).replace(',', '');
+}
+
+const timeFmt = new Intl.DateTimeFormat('en-AU', { timeZone: APP_TIME_ZONE, hour: 'numeric', minute: '2-digit' });
+
+/** Melbourne clock time, e.g. '6:05 pm'. */
+export function formatTime(at: EpochMs): string {
+  return timeFmt.format(new Date(at));
+}

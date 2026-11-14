@@ -28,6 +28,14 @@ Newest entries at the bottom. The newest entry on a topic wins. Add a dated line
 | 22 | 2026-11-14 | e2e runs on Chromium with the iPhone 13 viewport, UA and touch (no WebKit in the build environment). CI runs lint, unit, e2e and build on every push and PR; only `main` deploys | A failing test blocks the deploy |
 | 23 | 2026-11-14 | Actions versions: checkout v7, setup-node v7, upload-pages-artifact v5, deploy-pages v5 (latest major tags on 2026-11-14) | Brief task 7 |
 | 24 | 2026-11-14 | In the installed app, the tab bar and update banner are positioned from the top using a measured `--app-height` (the screen's long edge), not `bottom: 0` | iOS can launch a home-screen app with a viewport shorter than the screen until the page scrolls, which floated the tab bar up on short screens |
+| 25 | 2026-11-14 | On Log climb, tapping "Flash" / "Sent" / "Not yet" saves the climb; no Save button | Meets the tap budgets (flash on last-used wall = 2 taps) |
+| 26 | 2026-11-14 | Wall picker order comes from a `wallLastUsed` setting (wall ID → last log time), not a schema change. Logging a climb also sets `lastGymId` | Additive, no migration; cheap to read |
+| 27 | 2026-11-14 | Auto-close means 6 hours with no entry (not 6 hours since start); the session ends at its last entry's time | A long session is never cut off mid-climb |
+| 28 | 2026-11-14 | Starting or logging at another gym ends the open session and starts one there. The gym switcher alone never ends a session | One gym per session, one open at a time; a mis-tap on the switcher costs nothing |
+| 29 | 2026-11-14 | Editing or deleting an entry is a correction: the result is re-labelled and the problem's status re-derived from its entries, so a mis-tapped "Sent" can go back to project. A problem with no entries left is removed. Undo restores both exactly | "Sent never goes back" is about climbing, not fixing typos; no orphan problems |
+| 30 | 2026-11-14 | Default gym stays "last used, else first by name"; no gym order field | One tap on first launch, remembered after; closes the Phase 1 follow-up |
+| 31 | 2026-11-14 | Entries delete by swipe left or a "Delete" button in the edit panel; both show Undo | Swipe alone is not reachable with VoiceOver |
+| 32 | 2026-11-14 | Style tags offered while logging are read from `seed.json` at build time, not stored per database | No schema change in Phase 2; revisit if tags need editing |
 
 ## Assumptions still to confirm (non-blocking)
 
