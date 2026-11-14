@@ -79,7 +79,9 @@ db.version(1).stores({
 
 Booleans are not indexable in IndexedDB; filter `active` in memory (row counts are tiny).
 
-Settings keys: `seedVersionApplied`, `lastGymId`, `backupLastAt`, `photoRetentionDays` (default 90), `persistGranted`.
+Grade bands: reorder renumbers every band in the system to `1..n`; a new band is added as the hardest (`order = max + 1`, `approxV = null`); retire sets `active = false` and can be restored.
+
+Settings keys: `seedVersionApplied`, `lastGymId`, `backupLastAt`, `photoRetentionDays` (default 90), `persistGranted` (`true`/`false` from `navigator.storage.persist()` on first launch, re-read from `persisted()` on later launches; `null` when unsupported).
 
 ## Seeding
 
@@ -110,10 +112,10 @@ Settings keys: `seedVersionApplied`, `lastGymId`, `backupLastAt`, `photoRetentio
 
 **Walls**
 
-- Add: from Settings or inline from the wall picker ("+ New wall"), scoped to the current gym.
+- Add: from Settings or inline from the wall picker ("+ New wall"), scoped to the current gym. A new boulder wall gets a current `WallSet` with `setDate` = creation date; a board wall gets none.
 - Rename: changes `name` only.
-- Retire: `active = false`; hidden from pickers, kept in history and stats.
-- Merge A into B: move A's `WallSet`s to B (`wallId = B`), set `A.mergedIntoId = B`, `A.active = false`. If both have a current set, A's current set is retired with today's date.
+- Retire: `active = false`; hidden from pickers, kept in history and stats. A retired (not merged) wall can be restored.
+- Merge A into B: move A's `WallSet`s to B (`wallId = B`), set `A.mergedIntoId = B`, `A.active = false`. If both have a current set, A's current set is retired with today's date. Same gym only; B must be active; a merged wall cannot be restored.
 
 **Sessions**
 

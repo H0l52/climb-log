@@ -6,7 +6,7 @@ Phone-only, portrait, one-handed, used between attempts with chalky fingers. Spe
 
 Bottom tab bar, five tabs: **Today · Walls · Progress · Goals · More** (More = Board log, Settings). The "Log climb" action is a large button on Today, reachable by thumb.
 
-Routes (hash): `#/`, `#/log`, `#/walls`, `#/walls/:id`, `#/progress`, `#/goals`, `#/board`, `#/settings`.
+Routes (hash): `#/`, `#/log`, `#/walls`, `#/walls/:id`, `#/progress`, `#/goals`, `#/more`, `#/board`, `#/settings`. Unknown routes show "Not found" with a link to Today.
 
 ## Screens
 
@@ -58,7 +58,7 @@ Filters: gym (All / each), range (6 weeks / 3 months / year / all).
 - Appears in session history; excluded from colour stats.
 
 ### Settings
-- Gyms and set days · Walls (add, rename, retire, merge) · Grade bands (rename, recolour, reorder, add, retire) · Backup (export, import, last backup date) · Storage (persistence status, bytes used, photo retention) · About (version, build date).
+- Gyms and set days · Walls (per gym, opening on the last-used gym: add, rename, retire, restore, merge) · Grade bands (rename, recolour, reorder, add, retire, restore) · Backup (export, import, last backup date) · Storage (persistence status, bytes used, photo retention) · About (version, build date).
 
 ## States every screen must handle
 
