@@ -12,7 +12,7 @@ Routes (hash): `#/`, `#/log`, `#/walls`, `#/walls/:id`, `#/progress`, `#/goals`,
 
 ### Today
 - Gym switcher chips at the top (remembers last gym). Switching gym does not end an open session; starting or logging at the other gym does.
-- No open session: "Start session" + last session summary + streak (streak arrives in Phase 4).
+- No open session: "Start session" + last session summary + week streak (all gyms).
 - Open session: timer, running tally by colour, list of this session's entries (tap to edit colour, tries and result inline; swipe left or "Delete" in the edit panel to delete, with Undo), "Log climb", "End session".
 - "Log climb" and the session button are pinned above the tab bar. "Log climb" is always available; with no open session it starts one.
 - Strip of walls for this gym (below the gym switcher, scrolls sideways, freshest first) with "days since set"; walls set in the last 7 days (0–6 days) get a "Fresh" badge. Each tile opens the wall.
@@ -44,16 +44,21 @@ Tap budgets (after the screen is open):
 - "Mark as reset" opens an inline sheet: a date field (default per data-model, limited to the current set's date through today), "N projects will expire. Sent climbs stay sent.", Cancel and "Mark as reset". Saving shows a toast with Undo; while undo is still allowed (data-model, Resets) the detail screen also shows "Reset <date> · Undo reset".
 
 ### Progress
-Filters: gym (All / each), range (6 weeks / 3 months / year / all).
-- Headline tiles: working grade, sends this week, flash rate (trailing 6 weeks), streak.
-- Sends per colour per week (stacked bars).
-- Grade pyramid (all-time or range).
-- Flash rate trend per colour.
-- Style breakdown.
-- Session score trend.
+Filters: gym (All / each), range (6 weeks / 3 months / year / all). Both apply to every tile and chart (decision 40).
+- Headline tiles: working grade, sends in the range, flash rate in the range (each with a delta versus the previous period of the same length), week streak.
+- Sends per colour per week or month (stacked bars, easiest at the bottom; tap a bar for the readout).
+- Grade pyramid over the range (hardest at the top, values in text).
+- Flash rate trend: working grade and neighbours, "All colours" toggle; "–" and gaps where a colour had no sends.
+- Style breakdown: send rate by tag, weakest first.
+- Session score: points from new sends per bucket.
+- Every chart has a one-line summary underneath; trend charts show "Keep logging" with sessions in fewer than 3 periods. Empty log: "No climbs logged yet" with "Log a climb".
 
 ### Goals
-- Active goals with progress, streak, achievements timeline (first send of each colour is recorded automatically even without a goal).
+- Week streak and sessions this week tiles.
+- Active goals: colour chip, title, progress bar and value, deadline ("Missed" once passed), Remove (with Undo).
+- "New goal" (pinned above the tab bar) opens an inline form: type (First send, Sends, Flash rate, Sessions a week), colour, target stepper, optional deadline, Cancel / "Add goal".
+- Achieved goals, newest first, with the date.
+- Achievements: first send of each colour, newest first, recorded automatically even without a goal.
 
 ### Board
 - Pick board wall (Kilter, Spray Wall; data-driven like any wall), climb name, angle, V grade, tries, result.
