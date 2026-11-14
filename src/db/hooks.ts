@@ -5,6 +5,8 @@ import type { MetricInput } from '../domain/metrics';
 import { loadMetricInput } from './goals';
 import type { Entry, ProjectRow } from './logging';
 import type { WallDetail, WallSummary } from './wallViews';
+import type { BoardRow } from './board';
+import { sessionHistory, type SessionSummary } from './history';
 
 export function useGyms(): Gym[] | undefined {
   return useLiveQuery(async () => (await db.gyms.toArray()).sort((a, b) => a.name.localeCompare(b.name)), []);
@@ -85,4 +87,24 @@ export function useGoals(): Goal[] | undefined {
 /** Calendar dates of every session, for the streak. */
 export function useSessionDates(): ISODate[] | undefined {
   return useLiveQuery(async () => (await db.sessions.toArray()).map((s) => s.date), []);
+}
+
+/** Board entries of a session, newest first. */
+export function useBoardEntries(sessionId: ID | undefined): BoardRow[] | undefined {
+  return useLiveQuery(() => (sessionId ? repos.board.forSession(sessionId) : []), [sessionId]);
+}
+
+/** Every session, newest first, with entry counts. */
+export function useSessionHistory(): SessionSummary[] | undefined {
+  return useLiveQuery(() => sessionHistory(db), []);
+}
+
+/** Stored photo count and bytes. */
+export function usePhotoUsage(): { count: number; bytes: number } | undefined {
+  return useLiveQuery(() => repos.photos.usage(), []);
+}
+
+/** When the first session started; null with none. Drives the backup reminder before any export. */
+export function useFirstSessionAt(): EpochMs | null | undefined {
+  return useLiveQuery(async () => (await db.sessions.orderBy('date').first())?.startedAt ?? null, []);
 }

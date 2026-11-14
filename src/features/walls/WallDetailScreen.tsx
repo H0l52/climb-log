@@ -14,6 +14,7 @@ import { plural } from '../log/labels';
 import { useNow } from '../today/useNow';
 import { ResetSheet } from './ResetSheet';
 import { CountLine, SetAge } from './SetBits';
+import { PhotoThumb } from '../photos/PhotoThumb';
 
 const STATUS_LABEL = { project: 'Project', sent: 'Sent', expired: 'Expired' } as const;
 
@@ -24,6 +25,7 @@ function Problems({ rows, bands, label }: { rows: ProblemRow[]; bands: GradeBand
         const b = bands.find((x) => x.id === problem.gradeBandId);
         return (
           <li key={problem.id} className="list-row">
+            <PhotoThumb photoId={problem.photoId} label={`${b?.name ?? ''} ${problem.nickname ?? STATUS_LABEL[problem.status].toLowerCase()}`.trim()} />
             {b && <GradeChip band={b} small />}
             <span className="name">{problem.nickname ?? STATUS_LABEL[problem.status]}</span>
             <span className="muted">{problem.nickname ? `${STATUS_LABEL[problem.status]} · ` : ''}{plural(tries, 'try', 'tries')}</span>

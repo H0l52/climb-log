@@ -7,6 +7,8 @@ import { isValidHex } from '../domain/colour';
 import { createLoggingRepositories } from './logging';
 import { createResetRepositories } from './resets';
 import { createGoalRepositories } from './goals';
+import { createPhotoRepositories } from './photos';
+import { createBoardRepositories } from './board';
 
 export interface Clock {
   now: () => number;
@@ -139,7 +141,14 @@ export function createRepositories(db: ClimbDB, clock: Clock = systemClock) {
     },
   };
 
-  return { settings, gyms, walls, gradeBands, ...createLoggingRepositories(db, clock), resets: createResetRepositories(db, clock), goals: createGoalRepositories(db, clock) };
+  const logging = createLoggingRepositories(db, clock);
+  return {
+    settings, gyms, walls, gradeBands, ...logging,
+    resets: createResetRepositories(db, clock),
+    goals: createGoalRepositories(db, clock),
+    photos: createPhotoRepositories(db, clock),
+    board: createBoardRepositories(db, clock, logging.sessions.start),
+  };
 }
 
 export type Repositories = ReturnType<typeof createRepositories>;

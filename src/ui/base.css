@@ -456,3 +456,56 @@ input[type='color'].swatch {
 .goal-form { margin-top: 12px; }
 .goal-form > .row { margin: 12px 0; }
 .goal-form .sheet-actions { margin-top: 12px; }
+
+/* --- Phase 5: photos, board, backup --- */
+.file-btn { position: relative; cursor: pointer; }
+.file-btn:has(input:disabled) { opacity: 0.4; }
+.file-btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.photo-thumb {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface-2);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-preview { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+
+.project-item { display: flex; align-items: center; gap: var(--gap); }
+.project-item .project-row { flex: 1; min-width: 0; }
+
+.photo-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: calc(env(safe-area-inset-top) + 16px) var(--pad) calc(env(safe-area-inset-bottom) + 16px);
+  background: #000;
+}
+.photo-viewer img { max-width: 100%; max-height: calc(100dvh - 140px); object-fit: contain; border-radius: 4px; }
+.photo-viewer-close { min-height: 56px; min-width: 160px; background: #2a2e33; color: #f2efe8; border-color: #3a3f46; }
+
+.inline-banner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.inline-banner .grow { font-weight: 600; }
+
+.board-list { margin-top: 8px; }
+.board-row .badge { flex: none; }

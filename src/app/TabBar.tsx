@@ -7,7 +7,7 @@ const TABS = [
   { label: 'Walls', path: '/walls', Icon: IconWalls, routes: ['walls', 'wall'] },
   { label: 'Progress', path: '/progress', Icon: IconProgress, routes: ['progress'] },
   { label: 'Goals', path: '/goals', Icon: IconGoals, routes: ['goals'] },
-  { label: 'More', path: '/more', Icon: IconMore, routes: ['more', 'board', 'settings'] },
+  { label: 'More', path: '/more', Icon: IconMore, routes: ['more', 'board', 'sessions', 'settings'] },
 ] as const satisfies ReadonlyArray<{ routes: readonly RouteName[] } & Record<string, unknown>>;
 
 export function TabBar({ current }: { current: RouteName }) {

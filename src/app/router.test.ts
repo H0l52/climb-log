@@ -12,6 +12,7 @@ describe('parseHash', () => {
     ['#/goals', 'goals'],
     ['#/more', 'more'],
     ['#/board', 'board'],
+    ['#/sessions', 'sessions'],
     ['#/settings', 'settings'],
     ['#/log', 'log'],
     ['#/nope', 'notFound'],

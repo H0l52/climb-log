@@ -10,6 +10,9 @@ import { GradeChip } from '../../ui/GradeChip';
 import { Stepper } from '../../ui/Stepper';
 import { showToast } from '../../ui/toast';
 import { plural, resultLabel } from './labels';
+import type { PhotoInput } from '../../db/photos';
+import { PhotoPicker } from '../photos/PhotoPicker';
+import { PhotoThumb } from '../photos/PhotoThumb';
 
 const FELT: readonly Felt[] = ['easy', 'fair', 'hard'];
 
@@ -30,6 +33,7 @@ export function LogScreen() {
   const [tags, setTags] = useState<string[]>([]);
   const [felt, setFelt] = useState<Felt | null>(null);
   const [notes, setNotes] = useState('');
+  const [photo, setPhoto] = useState<PhotoInput | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,7 +72,7 @@ export function LogScreen() {
     if (!wall || !band || busy) return;
     setBusy(true);
     try {
-      const details = { tries, success, felt, notes };
+      const details = { tries, success, felt, notes, photo };
       const { attempt } = project
         ? await repos.logging.logAgain({ problemId: project.problem.id, ...details })
         : await repos.logging.logNew({ wallId: wall.id, gradeBandId: band.id, nickname, styleTags: tags, ...details });
@@ -113,7 +117,8 @@ export function LogScreen() {
               const b = bands.find((x) => x.id === problem.gradeBandId);
               const on = problem.id === projectId;
               return (
-                <li key={problem.id}>
+                <li key={problem.id} className="project-item">
+                  <PhotoThumb photoId={problem.photoId} label={`${b?.name ?? ''} ${problem.nickname ?? 'project'}`.trim()} />
                   <button type="button" className="project-row" aria-pressed={on} onClick={() => setProjectId(on ? null : problem.id)}>
                     {b && <GradeChip band={b} small />}
                     <span className="name">{problem.nickname ?? 'Project'}</span>
@@ -147,6 +152,7 @@ export function LogScreen() {
       <details className="more-detail">
         <summary>More detail</summary>
         <div className="stack">
+          <PhotoPicker value={photo} onChange={setPhoto} replacing={!!project?.problem.photoId} />
           {!project && (
             <>
               <label className="muted" htmlFor="log-nickname">Nickname</label>
