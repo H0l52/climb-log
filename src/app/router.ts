@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 
-export type RouteName = 'today' | 'log' | 'walls' | 'wall' | 'progress' | 'goals' | 'more' | 'board' | 'settings' | 'notFound';
+export type RouteName = 'today' | 'log' | 'walls' | 'wall' | 'progress' | 'goals' | 'more' | 'board' | 'sessions' | 'settings' | 'notFound';
 
 export interface Route {
   name: RouteName;
@@ -22,6 +22,7 @@ export function parseHash(hash: string): Route {
     case 'goals':
     case 'more':
     case 'board':
+    case 'sessions':
     case 'settings':
       return id ? { name: 'notFound', params: {} } : { name: head, params: {} };
     default:

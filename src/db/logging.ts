@@ -6,6 +6,7 @@ import {
 } from '../domain/logging';
 import { autoCloseAt, newSession } from '../domain/sessions';
 import { goalTables, syncGoals } from './goals';
+import type { PhotoInput } from './photos';
 
 /** One logged entry with what a list needs to show it. */
 export interface Entry {
@@ -122,7 +123,15 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
     return { set, wall };
   }
 
-  const tables = [db.settings, db.gyms, db.walls, db.wallSets, db.gradeBands, db.problems, db.attempts, db.sessions, db.goals];
+  const tables = [db.settings, db.gyms, db.walls, db.wallSets, db.gradeBands, db.problems, db.attempts, db.sessions, db.goals, db.photos];
+
+  /** Store a processed photo; returns its ID. Call inside a logging transaction. */
+  async function addPhoto(photo: PhotoInput | null | undefined): Promise<ID | null> {
+    if (!photo) return null;
+    const id = clock.newId();
+    await db.photos.add({ id, blob: photo.blob, thumb: photo.thumb, createdAt: clock.now() });
+    return id;
+  }
 
   const logging = {
     /** Projects on a wall's current set, most recently tried first. */
@@ -140,7 +149,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
     },
 
     /** New problem with its first entry, on the wall's current set. Starts a session if none is open. */
-    async logNew(input: Details & { wallId: ID; gradeBandId: ID; nickname?: string | null; styleTags?: string[] }): Promise<LogResult> {
+    async logNew(input: Details & { wallId: ID; gradeBandId: ID; nickname?: string | null; styleTags?: string[]; photo?: PhotoInput | null }): Promise<LogResult> {
       return db.transaction('rw', tables, async () => {
         const wall = await db.walls.get(input.wallId);
         if (!wall || !wall.active || wall.kind !== 'boulder') throw new Error('Pick a boulder wall');
@@ -156,6 +165,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
           },
           { problemId: clock.newId(), attemptId: clock.newId(), now: clock.now() },
         );
+        problem.photoId = await addPhoto(input.photo);
         await db.problems.add(problem);
         await db.attempts.add(attempt);
         await touch(wall);
@@ -165,7 +175,7 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
     },
 
     /** Another entry on an existing problem (re-log a project, or repeat a sent problem). */
-    async logAgain(input: Details & { problemId: ID }): Promise<LogResult> {
+    async logAgain(input: Details & { problemId: ID; photo?: PhotoInput | null }): Promise<LogResult> {
       return db.transaction('rw', tables, async () => {
         const before = await db.problems.get(input.problemId);
         if (!before) throw new Error('Unknown problem');
@@ -181,7 +191,10 @@ export function createLoggingRepositories(db: ClimbDB, clock: Clock) {
           },
           { attemptId: clock.newId(), now: clock.now() },
         );
-        await db.problems.update(problem.id, { status: problem.status });
+        // A new photo replaces the project's old one; the old photo is left for the orphan sweep.
+        const photoId = await addPhoto(input.photo);
+        if (photoId) problem.photoId = photoId;
+        await db.problems.update(problem.id, { status: problem.status, photoId: problem.photoId });
         await db.attempts.add(attempt);
         await touch(wall);
         await syncGoals(db);

@@ -4,9 +4,9 @@ Phone-only, portrait, one-handed, used between attempts with chalky fingers. Spe
 
 ## Navigation
 
-Bottom tab bar, five tabs: **Today · Walls · Progress · Goals · More** (More = Board log, Settings). The "Log climb" action is a large button on Today, reachable by thumb.
+Bottom tab bar, five tabs: **Today · Walls · Progress · Goals · More** (More = Sessions, Board log, Settings). The "Log climb" action is a large button on Today, reachable by thumb.
 
-Routes (hash): `#/`, `#/log`, `#/walls`, `#/walls/:id`, `#/progress`, `#/goals`, `#/more`, `#/board`, `#/settings`. Unknown routes show "Not found" with a link to Today.
+Routes (hash): `#/`, `#/log`, `#/walls`, `#/walls/:id`, `#/progress`, `#/goals`, `#/more`, `#/sessions`, `#/board`, `#/settings`. Unknown routes show "Not found" with a link to Today.
 
 ## Screens
 
@@ -25,7 +25,9 @@ One screen, top to bottom, no page changes:
 3. **Colour** — the grade bands as large chips in order, labelled.
 4. **Tries** — stepper, default 1.
 5. **Result** — "Sent" / "Not yet". With tries = 1 on a new problem, "Sent" is labelled "Flash". Tapping a result saves; there is no separate Save button. Both are disabled until a colour or project is chosen.
-6. Optional, collapsed: photo, nickname, style tags, felt difficulty, note.
+6. Optional, collapsed: photo ("Take photo" opens the camera, "Choose photo" the library; a preview with "Remove photo" once picked; on a project it replaces the current photo), nickname, style tags, felt difficulty, note.
+
+Project rows show the problem's thumbnail on the left; tapping the thumbnail opens the photo full screen (tap anywhere, "Close" or Escape to return), tapping the row selects the project.
 
 Saving returns to Today with a toast and Undo. The toast lasts 6 seconds and is dismissed on leaving Today.
 
@@ -61,16 +63,22 @@ Filters: gym (All / each), range (6 weeks / 3 months / year / all). Both apply t
 - Achievements: first send of each colour, newest first, recorded automatically even without a goal.
 
 ### Board
-- Pick board wall (Kilter, Spray Wall; data-driven like any wall), climb name, angle, V grade, tries, result.
-- Appears in session history; excluded from colour stats.
+- Board chips for the current gym (board walls, data-driven like any wall; most recently used first), optional climb name, V grade chips (V0–V16, tap again to clear), angle chips (0–70°, prefilled with the last angle on that board), tries stepper, "Not yet" / "Sent" (saves, toast with Undo; the form clears except board and angle).
+- "This session" lists the open session's board climbs with Delete (Undo).
+- No board at the gym: "No boards at this gym." with "Add a board in Settings".
+- Appears in session history and in Today's open-session list (read-only there); excluded from colour stats and the colour tally.
+
+### Sessions
+- Every session, newest first: date, gym, start time, "open" while running, "N climbs · M board". Tapping one expands its entries (read-only): boulder entries with thumbnail, colour, wall and result, then board entries. Empty: "No sessions yet." with "Log a climb".
 
 ### Settings
-- Gyms and set days · Walls (per gym, opening on the last-used gym: add, rename, retire, restore, merge) · Grade bands (rename, recolour, reorder, add, retire, restore) · Backup (export, import, last backup date) · Storage (persistence status, bytes used, photo retention) · About (version, build date).
+- Gyms and set days · Walls (per gym, opening on the last-used gym: add, rename, retire, restore, merge) · Grade bands (rename, recolour, reorder, add, retire, restore) · Backup · Storage (persistence status, bytes used, photo count and size, photo retention 30/90/180/365 days) · About (version, build date).
+- Backup: last backup date ("Never", or the date and days ago); "Include photos · N · size" toggle; "Export backup" prepares the file, then "Save backup" opens the share sheet (Save to Files) or downloads it, with Cancel. "Import backup" picks a `.zip` or `.json`; a bad file shows an inline error; a good one shows "Replace everything on this phone with the backup from <date>? It has N sessions, M climbs and P photos." with Cancel and "Replace data".
 
 ## States every screen must handle
 
 - Empty (first launch, no sessions): say what to do next, one action.
 - Offline: no difference. No spinners waiting on network.
 - Update available: non-blocking banner, "Reload to update".
-- Backup overdue (> 30 days): dismissible banner on Today.
+- Backup overdue (> 30 days since the last export, or since the first session if never): inline banner on Today under the wall strip, "Last backup N days ago" / "No backup yet", with "Back up" (opens Settings) and "Dismiss" (hides it for 7 days).
 - Storage not persistent or not installed: one-time explainer with "Share → Add to Home Screen".

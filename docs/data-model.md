@@ -81,7 +81,7 @@ Booleans are not indexable in IndexedDB; filter `active` in memory (row counts a
 
 Grade bands: reorder renumbers every band in the system to `1..n`; a new band is added as the hardest (`order = max + 1`, `approxV = null`); retire sets `active = false` and can be restored.
 
-Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by logging a climb), `wallLastUsed` (map of wall ID → epoch ms of the last climb logged there; orders the wall picker), `backupLastAt`, `photoRetentionDays` (default 90), `persistGranted` (`true`/`false` from `navigator.storage.persist()` on first launch, re-read from `persisted()` on later launches; `null` when unsupported). `lastReset` (map of wall ID → the wall's latest reset record `{ wallId, retiredSetId, newSetId, date, changed: [{ problemId, before }], madeAt }`, kept so Undo survives a reload; removed on undo).
+Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by logging a climb), `wallLastUsed` (map of wall ID → epoch ms of the last climb logged there; orders the wall picker), `backupLastAt`, `photoRetentionDays` (default 90), `persistGranted` (`true`/`false` from `navigator.storage.persist()` on first launch, re-read from `persisted()` on later launches; `null` when unsupported). `lastReset` (map of wall ID → the wall's latest reset record `{ wallId, retiredSetId, newSetId, date, changed: [{ problemId, before }], madeAt }`, kept so Undo survives a reload; removed on undo), `backupReminderDismissedAt` (epoch ms of the last "Dismiss" on the backup banner), `exportIncludePhotos` (boolean, default `true`).
 
 ## Seeding
 
@@ -131,6 +131,19 @@ Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by
 - A session with no entry for 6 hours is closed automatically at its last attempt's time (its start time if nothing was logged). Checked on launch, on return to the foreground and before each log.
 - Ending a session sets `endedAt`; an empty session is kept.
 
+**Photos**
+
+- Taken on Log climb (camera or library), downscaled before any transaction: at most 1280 px on the long edge as JPEG at 0.7, stepping down by 0.1 to 0.4 until it is ≤ 300 KB; a 160 px thumbnail the same way, ≤ 15 KB. EXIF orientation is applied. Stored in `photos` (its own table, never indexed), referenced by `Problem.photoId`.
+- A new problem gets the photo in the same transaction as the problem and first entry. Re-logging a project with a photo replaces its `photoId`; the old photo is left for the orphan sweep.
+- Retention (on launch and when the setting changes): a photo is deleted when its problem's set was retired more than `photoRetentionDays` days before today (Melbourne dates; default 90; offered 30/90/180/365). The problem stays, with `photoId = null`. Photos on current sets are never removed.
+- Orphan sweep (same pass): a photo no problem points at (its problem's only entry was deleted) is removed once it is more than 24 hours old, well past Undo.
+
+**Board**
+
+- A `BoardLog` is logged on an active `board` wall: optional climb name, V grade (V0–V16), angle (0–70° in 5° steps), tries ≥ 1, `send` or `fail`. Logging starts or switches the session exactly like a boulder climb.
+- Board logs appear in the session's entries (Today, session history) and count as sessions for the week streak and sessions-a-week goals. They never enter colour metrics or the colour tally: `loadMetricInput` does not read `boardLogs`.
+- Delete is explicit, with Undo.
+
 ## Metrics
 
 All computed in `src/domain/metrics.ts` (and the Progress view model in `src/domain/progress.ts`) as pure functions over arrays. Boulder problems only; board logs are never loaded. Every metric is registered in `METRICS` so the reset test covers it, and each has hand-calculated fixture values (`src/domain/__fixtures__/metricsFixture.ts`).
@@ -168,8 +181,13 @@ A goal past its deadline and not achieved is shown as missed. Goals can be remov
   "tables": { "gyms": [], "gradeSystems": [], "gradeBands": [], "walls": [],
               "wallSets": [], "problems": [], "sessions": [], "attempts": [],
               "boardLogs": [], "goals": [], "settings": [] },
-  "photos": [ { "id": "", "createdAt": 0, "file": "photos/<id>.jpg" } ] }
+  "photos": [ { "id": "", "createdAt": 0,
+                "file": "photos/<id>.jpg", "thumb": "photos/<id>.thumb.jpg" } ] }
 ```
 
-- Delivered as a single `.zip` (JSON + `photos/`), or JSON only when "include photos" is off.
-- Import replaces the whole database after a confirmation, refuses a higher `schemaVersion`, and migrates a lower one.
+- Delivered as `climb-log-YYYY-MM-DD.zip` (`climb-log.json` + `photos/`, JPEGs stored uncompressed), or `climb-log-YYYY-MM-DD.json` alone when "Include photos" is off. Code: `src/domain/exportFormat.ts` (format, validation, migrations) and `src/db/backup.ts` (build, parse, import).
+- Rows are written exactly as stored. The `backupLastAt` setting in the file is the file's `exportedAt`, so a restored copy remembers this backup. The app sets `backupLastAt` only once the share sheet or download succeeds.
+- Import accepts `.zip` or `.json`, refuses a file whose `app` is not `climb-log` ("This file is not a Climb Log backup.") or whose `schemaVersion` is higher than the app's (says to update the app), and migrates a lower one through `MIGRATIONS[n]` (n → n + 1, applied in order; none exist while the format is version 1). Damaged files (missing table, row without key, missing photo files) are refused.
+- After a confirmation showing the backup's date and counts, import replaces every table, photos and settings included, in one transaction. Photo blobs are built before the transaction. A problem whose photo is not in the file (JSON-only backup) gets `photoId = null`.
+- Export → clear → import yields a deep-equal database (`src/db/backup.test.ts`).
+- Backup reminder: shown on Today when more than 30 Melbourne calendar days have passed since `backupLastAt` (or, never exported, since the first session); "Dismiss" hides it for 7 days.

@@ -15,6 +15,7 @@ import { GoalsScreen } from '../features/goals/GoalsScreen';
 import { MoreScreen } from '../features/more/MoreScreen';
 import { BoardScreen } from '../features/board/BoardScreen';
 import { SettingsScreen } from '../features/settings/SettingsScreen';
+import { SessionsScreen } from '../features/sessions/SessionsScreen';
 
 function Screen({ name, params }: { name: RouteName; params: Record<string, string> }) {
   switch (name) {
@@ -34,6 +35,8 @@ function Screen({ name, params }: { name: RouteName; params: Record<string, stri
       return <MoreScreen />;
     case 'board':
       return <BoardScreen />;
+    case 'sessions':
+      return <SessionsScreen />;
     case 'settings':
       return <SettingsScreen />;
     case 'notFound':

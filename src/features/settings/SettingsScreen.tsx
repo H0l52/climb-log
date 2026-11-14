@@ -2,6 +2,7 @@ import { GymsSection } from './GymsSection';
 import { WallsSection } from './WallsSection';
 import { GradeBandsSection } from './GradeBandsSection';
 import { StorageSection } from './StorageSection';
+import { BackupSection } from './BackupSection';
 import { AboutSection } from './AboutSection';
 
 export function SettingsScreen() {
@@ -11,6 +12,7 @@ export function SettingsScreen() {
       <WallsSection />
       <GradeBandsSection />
       <GymsSection />
+      <BackupSection />
       <StorageSection />
       <AboutSection />
     </section>

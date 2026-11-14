@@ -1,5 +1,7 @@
 import { repos } from '../../db';
-import { useCurrentGym, useGradeBands, useLastSession, useOpenSession, useSessionDates, useSessionEntries } from '../../db/hooks';
+import { useBoardEntries, useCurrentGym, useGradeBands, useLastSession, useOpenSession, useSessionDates, useSessionEntries } from '../../db/hooks';
+import { BoardEntryRow } from '../board/BoardEntryRow';
+import { BackupBanner } from '../backup/BackupBanner';
 import { weeklyStreak } from '../../domain/metrics';
 import type { Entry } from '../../db/logging';
 import type { GradeBand } from '../../db/types';
@@ -36,6 +38,7 @@ export function TodayScreen() {
   const bands = useGradeBands();
   const open = useOpenSession();
   const entries = useSessionEntries(open?.id);
+  const board = useBoardEntries(open?.id);
   const last = useLastSession(current?.gymId);
   const now = useNow();
   const sessionDates = useSessionDates();
@@ -57,6 +60,7 @@ export function TodayScreen() {
         ))}
       </div>
       <WallStrip gymId={gymId} today={melbourneDate(now)} />
+      <BackupBanner now={now} />
 
       {here ? (
         <>
@@ -65,10 +69,15 @@ export function TodayScreen() {
             <span className="muted"> · started {formatTime(here.startedAt)}</span>
           </p>
           <Tally entries={entries ?? []} bands={bands} />
-          {entries?.length === 0 && <p className="muted">Nothing logged yet. Log your first climb.</p>}
+          {entries?.length === 0 && !board?.length && <p className="muted">Nothing logged yet. Log your first climb.</p>}
           {!!entries?.length && (
             <ul className="list" aria-label="This session">
               {entries.map((e) => <EntryRow key={e.attempt.id} entry={e} bands={bands} />)}
+            </ul>
+          )}
+          {!!board?.length && (
+            <ul className="list board-list" aria-label="Board this session">
+              {board.map((r) => <BoardEntryRow key={r.log.id} row={r} />)}
             </ul>
           )}
         </>

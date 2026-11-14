@@ -1,0 +1,8 @@
+/** '512 B', '84 KB', '3.2 MB'. */
+export function formatBytes(n: number | null): string {
+  if (n === null) return '–';
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 ** 2) return `${(n / 1024).toFixed(0)} KB`;
+  if (n < 1024 ** 3) return `${(n / 1024 ** 2).toFixed(1)} MB`;
+  return `${(n / 1024 ** 3).toFixed(1)} GB`;
+}
