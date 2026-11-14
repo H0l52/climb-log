@@ -1,0 +1,43 @@
+{
+  "seedVersion": 1,
+  "gyms": [
+    { "id": "collingwood", "name": "Urban Climb Collingwood", "active": true, "setDays": [4, 5] },
+    { "id": "blackburn", "name": "Urban Climb Blackburn", "active": true, "setDays": [1, 2] }
+  ],
+  "gradeSystems": [
+    { "id": "uc-colours", "name": "Urban Climb colours" }
+  ],
+  "gradeBands": [
+    { "id": "yellow", "gradeSystemId": "uc-colours", "name": "Yellow", "hex": "#F2C200", "order": 1, "approxV": 0, "active": true },
+    { "id": "blue", "gradeSystemId": "uc-colours", "name": "Blue", "hex": "#1E6FD9", "order": 2, "approxV": 0, "active": true },
+    { "id": "purple", "gradeSystemId": "uc-colours", "name": "Purple", "hex": "#7B3FB5", "order": 3, "approxV": 1, "active": true },
+    { "id": "green", "gradeSystemId": "uc-colours", "name": "Green", "hex": "#2E9E4F", "order": 4, "approxV": 2, "active": true },
+    { "id": "orange", "gradeSystemId": "uc-colours", "name": "Orange", "hex": "#F07C1A", "order": 5, "approxV": 3, "active": true },
+    { "id": "red", "gradeSystemId": "uc-colours", "name": "Red", "hex": "#D62D2D", "order": 6, "approxV": 4, "active": true },
+    { "id": "black", "gradeSystemId": "uc-colours", "name": "Black", "hex": "#1A1A1A", "order": 7, "approxV": 6, "active": true },
+    { "id": "white", "gradeSystemId": "uc-colours", "name": "White", "hex": "#F5F5F5", "order": 8, "approxV": 8, "active": true }
+  ],
+  "walls": [
+    { "id": "cw-ding-dong", "gymId": "collingwood", "name": "Ding Dong", "kind": "boulder", "styleTags": [] },
+    { "id": "cw-nugget", "gymId": "collingwood", "name": "Nugget", "kind": "boulder", "styleTags": [] },
+    { "id": "cw-slab-city", "gymId": "collingwood", "name": "Slab City", "kind": "boulder", "styleTags": ["slab"] },
+    { "id": "cw-bowie", "gymId": "collingwood", "name": "Bowie", "kind": "boulder", "styleTags": [] },
+    { "id": "cw-roofio", "gymId": "collingwood", "name": "Roofio", "kind": "boulder", "styleTags": ["roof"] },
+    { "id": "cw-atelier", "gymId": "collingwood", "name": "Atelier", "kind": "boulder", "styleTags": [] },
+    { "id": "cw-star-factory", "gymId": "collingwood", "name": "Star Factory", "kind": "boulder", "styleTags": [] },
+    { "id": "cw-wolverine", "gymId": "collingwood", "name": "Wolverine", "kind": "boulder", "styleTags": [] },
+    { "id": "cw-the-86", "gymId": "collingwood", "name": "The 86", "kind": "boulder", "styleTags": [] },
+    { "id": "cw-the-lab", "gymId": "collingwood", "name": "The Lab", "kind": "boulder", "styleTags": [] },
+    { "id": "cw-kilter", "gymId": "collingwood", "name": "Kilter Board", "kind": "board", "styleTags": [] },
+    { "id": "cw-spray", "gymId": "collingwood", "name": "Spray Wall", "kind": "board", "styleTags": [] },
+    { "id": "bb-baw-baw", "gymId": "blackburn", "name": "Baw Baw", "kind": "boulder", "styleTags": [] },
+    { "id": "bb-station-street-woody", "gymId": "blackburn", "name": "Station Street Woody", "kind": "boulder", "styleTags": [] },
+    { "id": "bb-spray", "gymId": "blackburn", "name": "Spray Wall", "kind": "board", "styleTags": [] }
+  ],
+  "styleTags": ["slab", "vertical", "overhang", "roof", "dyno", "crimp", "sloper", "pinch", "compression", "balance", "comp-style"],
+  "notes": {
+    "setDays": "ISO weekday numbers, Monday = 1. Collingwood Thu/Fri, Blackburn boulders Mon/Tue (Nov 2026 schedule).",
+    "approxV": "Community estimates, display only. Yellow is 'VB' (shown as V0-). Orange is interpolated.",
+    "walls": "Seed applies gradeSystemId 'uc-colours', active true and mergedIntoId null to every wall. Wall styleTags beyond the two obvious ones are left for the owner to set."
+  }
+}
