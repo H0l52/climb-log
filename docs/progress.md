@@ -36,9 +36,9 @@ Criteria only the owner can verify on the iPhone. Add items here; the owner tick
 
 **Phase 3**
 
-- [ ] **Reset date wheel.** Walls → any wall → "Mark as reset". The date field shows the gym's last set day (or the day the current set went up, if later). Tap it: the iOS date wheel opens. Pick tomorrow: the sheet shows "A reset cannot be in the future" and "Mark as reset" is disabled. Pick the default again and tap "Mark as reset": the toast "<wall> reset · <date>" appears with Undo, and "Current set" is empty.
-- [ ] **Undo after reload.** Right after a reset, close the app fully and reopen it. Open the same wall: "Reset <date> · Undo reset" is still shown. Tap it: the wall's projects are back and "Past sets" is gone. Then reset again, end the session on Today, and reopen the wall: the Undo line is gone.
-- [ ] **Today strip.** On Today, the strip under the gym chips lists that gym's walls, freshest first, each with "N days" and "Fresh" for walls set in the last 7 days. It scrolls sideways with one thumb and each tile opens the wall.
+- [x] **Reset date wheel.** Walls → any wall → "Mark as reset". The date field shows the gym's last set day (or the day the current set went up, if later). Tap it: the iOS date wheel opens. Pick tomorrow: the sheet shows "A reset cannot be in the future" and "Mark as reset" is disabled. Pick the default again and tap "Mark as reset": the toast "<wall> reset · <date>" appears with Undo, and "Current set" is empty.
+- [x] **Undo after reload.** Right after a reset, close the app fully and reopen it. Open the same wall: "Reset <date> · Undo reset" is still shown. Tap it: the wall's projects are back and "Past sets" is gone. Then reset again, end the session on Today, and reopen the wall: the Undo line is gone.
+- [x] **Today strip.** On Today, the strip under the gym chips lists that gym's walls, freshest first, each with "N days" and "Fresh" for walls set in the last 7 days. It scrolls sideways with one thumb and each tile opens the wall.
 
 ## Follow-ups
 
