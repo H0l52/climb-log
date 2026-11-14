@@ -59,3 +59,33 @@ export function addDays(date: ISODate, days: number): ISODate {
 export function daysBetween(from: ISODate, to: ISODate): number {
   return Math.round((toUtc(to) - toUtc(from)) / 86_400_000);
 }
+
+/** Monday of the Monday-to-Sunday week containing a calendar date. */
+export function weekStart(date: ISODate): ISODate {
+  return addDays(date, 1 - isoWeekday(date));
+}
+
+/** First day of the date's month. */
+export function monthStart(date: ISODate): ISODate {
+  return `${date.slice(0, 7)}-01`;
+}
+
+/** First day of the month `n` months after the date's month (negative goes back). */
+export function addMonths(date: ISODate, n: number): ISODate {
+  const [y, m] = date.split('-').map(Number) as [number, number];
+  const total = y * 12 + (m - 1) + n;
+  return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, '0')}-01`;
+}
+
+const shortFmt = new Intl.DateTimeFormat('en-AU', { timeZone: 'UTC', day: 'numeric', month: 'short' });
+const monthFmt = new Intl.DateTimeFormat('en-AU', { timeZone: 'UTC', month: 'short' });
+
+/** '3 Nov' for a calendar date. */
+export function formatShort(date: ISODate): string {
+  return shortFmt.format(new Date(toUtc(date)));
+}
+
+/** 'Nov' for a calendar date. */
+export function formatMonth(date: ISODate): string {
+  return monthFmt.format(new Date(toUtc(date)));
+}
