@@ -14,7 +14,11 @@ let ready: Promise<void> | null = null;
 export function initDatabase(): Promise<void> {
   ready ??= (async () => {
     await applySeed(db, seedJson as SeedData, { now: Date.now() });
+    await repos.sessions.closeStale();
     await ensurePersistence(repos, typeof navigator !== 'undefined' ? navigator.storage : undefined);
   })();
   return ready;
 }
+
+/** Style tags offered when logging (from the seed file; not stored per database). */
+export const styleTagOptions: readonly string[] = (seedJson as SeedData).styleTags;

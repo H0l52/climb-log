@@ -11,9 +11,10 @@ Routes (hash): `#/`, `#/log`, `#/walls`, `#/walls/:id`, `#/progress`, `#/goals`,
 ## Screens
 
 ### Today
-- Gym switcher chip at the top (remembers last gym).
-- No open session: "Start session" + last session summary + streak.
-- Open session: timer, running tally by colour, list of this session's entries (tap to edit, swipe to delete with undo), "Log climb", "End session".
+- Gym switcher chips at the top (remembers last gym). Switching gym does not end an open session; starting or logging at the other gym does.
+- No open session: "Start session" + last session summary + streak (streak arrives in Phase 4).
+- Open session: timer, running tally by colour, list of this session's entries (tap to edit colour, tries and result inline; swipe left or "Delete" in the edit panel to delete, with Undo), "Log climb", "End session".
+- "Log climb" and the session button are pinned above the tab bar. "Log climb" is always available; with no open session it starts one.
 - Strip of walls for this gym with "days since set"; walls set in the last 7 days get a "fresh" badge.
 
 ### Log climb (the critical flow)
@@ -23,10 +24,10 @@ One screen, top to bottom, no page changes:
 2. **Projects on this wall** — if any, one row each (colour chip, nickname/thumbnail, tries so far). Tapping one switches to "re-log" mode.
 3. **Colour** — the grade bands as large chips in order, labelled.
 4. **Tries** — stepper, default 1.
-5. **Result** — "Sent" / "Not yet". With tries = 1 on a new problem, "Sent" is labelled "Flash".
+5. **Result** — "Sent" / "Not yet". With tries = 1 on a new problem, "Sent" is labelled "Flash". Tapping a result saves; there is no separate Save button. Both are disabled until a colour or project is chosen.
 6. Optional, collapsed: photo, nickname, style tags, felt difficulty, note.
 
-Saving returns to Today with a toast and Undo.
+Saving returns to Today with a toast and Undo. The toast lasts 6 seconds and is dismissed on leaving Today.
 
 Tap budgets (after the screen is open):
 

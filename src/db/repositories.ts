@@ -4,6 +4,7 @@ import { melbourneDate } from '../domain/dates';
 import { moveItem, nextOrder } from '../domain/ordering';
 import { cleanName, planMerge } from '../domain/walls';
 import { isValidHex } from '../domain/colour';
+import { createLoggingRepositories } from './logging';
 
 export interface Clock {
   now: () => number;
@@ -136,7 +137,7 @@ export function createRepositories(db: ClimbDB, clock: Clock = systemClock) {
     },
   };
 
-  return { settings, gyms, walls, gradeBands };
+  return { settings, gyms, walls, gradeBands, ...createLoggingRepositories(db, clock) };
 }
 
 export type Repositories = ReturnType<typeof createRepositories>;

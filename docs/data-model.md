@@ -81,7 +81,7 @@ Booleans are not indexable in IndexedDB; filter `active` in memory (row counts a
 
 Grade bands: reorder renumbers every band in the system to `1..n`; a new band is added as the hardest (`order = max + 1`, `approxV = null`); retire sets `active = false` and can be restored.
 
-Settings keys: `seedVersionApplied`, `lastGymId`, `backupLastAt`, `photoRetentionDays` (default 90), `persistGranted` (`true`/`false` from `navigator.storage.persist()` on first launch, re-read from `persisted()` on later launches; `null` when unsupported).
+Settings keys: `seedVersionApplied`, `lastGymId` (set by the gym switcher and by logging a climb), `wallLastUsed` (map of wall ID → epoch ms of the last climb logged there; orders the wall picker), `backupLastAt`, `photoRetentionDays` (default 90), `persistGranted` (`true`/`false` from `navigator.storage.persist()` on first launch, re-read from `persisted()` on later launches; `null` when unsupported).
 
 ## Seeding
 
@@ -99,6 +99,10 @@ Settings keys: `seedVersionApplied`, `lastGymId`, `backupLastAt`, `photoRetentio
 - `send`: any later or multi-try success.
 - Status: `project` → `sent` on first success. `sent` never goes back. Repeats of a sent problem are logged as attempts but do not count as new sends.
 - Total tries to send = sum of `tries` up to and including the first successful attempt.
+- Entries of one problem have strictly increasing `createdAt`, so "first entry" is never ambiguous.
+- An `expired` problem takes no new entries; it is logged as a new climb on the new set.
+- Corrections (the user edits or deletes an entry) are not transitions: the entry's result is re-labelled (`flash` only if it is still the first entry with `tries = 1`) and the problem's status is re-derived from its remaining entries (any success → `sent`, else `project`, or `expired` on a retired set). Deleting a problem's only entry removes the problem. Undo of a delete restores the entry and problem exactly.
+- New climbs go on the wall's current set. Only active boulder walls can be logged on.
 
 **Resets**
 
@@ -119,8 +123,10 @@ Settings keys: `seedVersionApplied`, `lastGymId`, `backupLastAt`, `photoRetentio
 
 **Sessions**
 
-- One gym per session. One open session at a time. Logging with no open session starts one.
-- Sessions left open for 6 hours are closed automatically at the last attempt's time.
+- One gym per session. One open session at a time. Logging with no open session starts one for the wall's gym.
+- Starting a session or logging a climb at another gym ends the open session at that moment and starts one there.
+- A session with no entry for 6 hours is closed automatically at its last attempt's time (its start time if nothing was logged). Checked on launch, on return to the foreground and before each log.
+- Ending a session sets `endedAt`; an empty session is kept.
 
 ## Metrics
 
