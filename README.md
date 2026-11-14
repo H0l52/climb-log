@@ -14,7 +14,7 @@ Everything a Claude Code session needs to build the Urban Climb progress tracker
 | `docs/phases/phase-N-*.md` | One brief per phase: tasks + success criteria | One per session |
 | `docs/skills-prompting-guide.md` | For you: how to prompt the skills reliably | Not needed by Claude Code |
 | `docs/progress.md` | Status board Claude Code keeps current | Each phase |
-| `docs/templates/deploy.yml` | GitHub Pages workflow (moved into place in Phase 1) | Phase 1 |
+| `.github/workflows/deploy.yml` | CI (lint, test, e2e, build) and GitHub Pages deploy from `main` | Every push |
 | `src/data/seed.json` | Gyms, colours, walls. The only place wall names live | Phase 1 |
 | `.claude/skills/*/SKILL.md` | Five project skills (see below) | When routed or invoked |
 
