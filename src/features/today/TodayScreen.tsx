@@ -2,7 +2,7 @@ import { repos } from '../../db';
 import { useCurrentGym, useGradeBands, useLastSession, useOpenSession, useSessionEntries } from '../../db/hooks';
 import type { Entry } from '../../db/logging';
 import type { GradeBand } from '../../db/types';
-import { formatDate, formatTime } from '../../domain/dates';
+import { formatDate, formatTime, melbourneDate } from '../../domain/dates';
 import { formatElapsed, sessionTally } from '../../domain/sessions';
 import { href } from '../../app/router';
 import { GradeChip } from '../../ui/GradeChip';
@@ -10,6 +10,7 @@ import { showToast } from '../../ui/toast';
 import { plural } from '../log/labels';
 import { EntryRow } from './EntryRow';
 import { useNow } from './useNow';
+import { WallStrip } from './WallStrip';
 
 function Tally({ entries, bands }: { entries: Entry[]; bands: GradeBand[] }) {
   const t = sessionTally(entries.map((e) => ({ gradeBandId: e.problem.gradeBandId, result: e.attempt.result, newSend: e.newSend })));
@@ -53,6 +54,7 @@ export function TodayScreen() {
           </button>
         ))}
       </div>
+      <WallStrip gymId={gymId} today={melbourneDate(now)} />
 
       {here ? (
         <>

@@ -39,3 +39,23 @@ const timeFmt = new Intl.DateTimeFormat('en-AU', { timeZone: APP_TIME_ZONE, hour
 export function formatTime(at: EpochMs): string {
   return timeFmt.format(new Date(at));
 }
+
+const toUtc = (date: ISODate): number => {
+  const [y, m, d] = date.split('-').map(Number) as [number, number, number];
+  return Date.UTC(y, m - 1, d);
+};
+const fromUtc = (ms: number): ISODate => {
+  const d = new Date(ms);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+};
+
+/** Calendar arithmetic on dates (no time zone involved: the date is already a Melbourne date). */
+export function addDays(date: ISODate, days: number): ISODate {
+  return fromUtc(toUtc(date) + days * 86_400_000);
+}
+
+/** Whole calendar days from `from` to `to` (negative when `to` is earlier). */
+export function daysBetween(from: ISODate, to: ISODate): number {
+  return Math.round((toUtc(to) - toUtc(from)) / 86_400_000);
+}

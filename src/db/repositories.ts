@@ -5,6 +5,7 @@ import { moveItem, nextOrder } from '../domain/ordering';
 import { cleanName, planMerge } from '../domain/walls';
 import { isValidHex } from '../domain/colour';
 import { createLoggingRepositories } from './logging';
+import { createResetRepositories } from './resets';
 
 export interface Clock {
   now: () => number;
@@ -137,7 +138,7 @@ export function createRepositories(db: ClimbDB, clock: Clock = systemClock) {
     },
   };
 
-  return { settings, gyms, walls, gradeBands, ...createLoggingRepositories(db, clock) };
+  return { settings, gyms, walls, gradeBands, ...createLoggingRepositories(db, clock), resets: createResetRepositories(db, clock) };
 }
 
 export type Repositories = ReturnType<typeof createRepositories>;

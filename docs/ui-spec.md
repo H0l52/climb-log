@@ -15,7 +15,7 @@ Routes (hash): `#/`, `#/log`, `#/walls`, `#/walls/:id`, `#/progress`, `#/goals`,
 - No open session: "Start session" + last session summary + streak (streak arrives in Phase 4).
 - Open session: timer, running tally by colour, list of this session's entries (tap to edit colour, tries and result inline; swipe left or "Delete" in the edit panel to delete, with Undo), "Log climb", "End session".
 - "Log climb" and the session button are pinned above the tab bar. "Log climb" is always available; with no open session it starts one.
-- Strip of walls for this gym with "days since set"; walls set in the last 7 days get a "fresh" badge.
+- Strip of walls for this gym (below the gym switcher, scrolls sideways, freshest first) with "days since set"; walls set in the last 7 days (0–6 days) get a "Fresh" badge. Each tile opens the wall.
 
 ### Log climb (the critical flow)
 One screen, top to bottom, no page changes:
@@ -39,8 +39,9 @@ Tap budgets (after the screen is open):
 | New wall + first climb | ≤ 6 taps + typing the name |
 
 ### Walls
-- List for the current gym: name, days since set, counts of sent/project per colour for the current set.
-- Wall detail: current set's problems, past sets (collapsed), "Mark as reset" (date sheet, default per data-model), rename, retire, merge.
+- Gym switcher chips (shared with Today). List of the gym's active boulder walls by name: name, "Set N days ago" with a "Fresh" badge (0–6 days), and two lines of colour chips for the current set: "Sent" and "Projects", each with counts. Tapping a row opens the wall.
+- Wall detail: gym and set age, current set's problems (projects first), past sets (collapsed, each set collapsed again, read-only: date range, sent/expired counts, climbs), and "Mark as reset" pinned above the tab bar. Rename, retire and merge stay in Settings (linked from the detail screen).
+- "Mark as reset" opens an inline sheet: a date field (default per data-model, limited to the current set's date through today), "N projects will expire. Sent climbs stay sent.", Cancel and "Mark as reset". Saving shows a toast with Undo; while undo is still allowed (data-model, Resets) the detail screen also shows "Reset <date> · Undo reset".
 
 ### Progress
 Filters: gym (All / each), range (6 weeks / 3 months / year / all).

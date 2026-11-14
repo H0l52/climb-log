@@ -1,4 +1,4 @@
-import type { EpochMs, ID, ISODate, Wall, WallSet } from '../db/types';
+import type { EpochMs, ID, ISODate, Problem, Wall, WallSet } from '../db/types';
 
 export interface MergePlan {
   from: Pick<Wall, 'id' | 'active' | 'mergedIntoId'>;
@@ -34,3 +34,18 @@ export function byRecency<T extends Pick<Wall, 'id' | 'active' | 'name'>>(walls:
 export function cleanName(name: string): string {
   return name.trim().replace(/\s+/g, ' ');
 }
+
+export interface BandCounts {
+  sent: Record<ID, number>;
+  project: Record<ID, number>;
+  expired: Record<ID, number>;
+}
+
+/** Problems on a set counted by status and colour. */
+export function countByBand(problems: readonly Pick<Problem, 'gradeBandId' | 'status'>[]): BandCounts {
+  const out: BandCounts = { sent: {}, project: {}, expired: {} };
+  for (const p of problems) out[p.status][p.gradeBandId] = (out[p.status][p.gradeBandId] ?? 0) + 1;
+  return out;
+}
+
+export const total = (counts: Readonly<Record<ID, number>>): number => Object.values(counts).reduce((a, b) => a + b, 0);

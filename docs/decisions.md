@@ -36,6 +36,12 @@ Newest entries at the bottom. The newest entry on a topic wins. Add a dated line
 | 30 | 2026-11-14 | Default gym stays "last used, else first by name"; no gym order field | One tap on first launch, remembered after; closes the Phase 1 follow-up |
 | 31 | 2026-11-14 | Entries delete by swipe left or a "Delete" button in the edit panel; both show Undo | Swipe alone is not reachable with VoiceOver |
 | 32 | 2026-11-14 | Style tags offered while logging are read from `seed.json` at build time, not stored per database | No schema change in Phase 2; revisit if tags need editing |
+| 33 | 2026-11-14 | A reset's undo record is kept per wall in a `lastReset` setting, not a new table | No schema change; Undo survives a reload |
+| 34 | 2026-11-14 | Reset undo window: until the session open at the reset ends (or, with none open, the next session ends), or another reset on that wall. Climbs logged on the new set meanwhile move back to the restored set; a problem corrected since the reset keeps its corrected status | Data-model rule made concrete; undo never loses history |
+| 35 | 2026-11-14 | Reset date may be any day from the current set's date to today; the default is raised to the current set's date when the last set day is earlier | A set cannot be retired before it went up |
+| 36 | 2026-11-14 | "Fresh" means 0–6 days since set; the badge is neutral (outlined), not coloured | "Last 7 days" including today; only grade colours are saturated |
+| 37 | 2026-11-14 | Walls list and Today strip show active boulder walls only; rename/retire/merge stay in Settings, linked from wall detail | Board walls have no sets; avoids duplicating the Settings editor |
+| 38 | 2026-11-14 | `src/domain/metrics.ts` starts in Phase 3 as stubs (sends, flashes, flash rate, send rate, session score) registered in `METRICS`; all derive from attempts, never `Problem.status` | Phase 3 criterion: a reset changes no metric; Phase 4 extends the same module |
 
 ## Assumptions still to confirm (non-blocking)
 
